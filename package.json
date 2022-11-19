@@ -1,0 +1,24 @@
+{
+  "name": "life_cycle_manager_be",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "develop": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TruongKhoiNguyen/Product-Life-Cycle-Manager-BE.git"
+  },
+  "keywords": [],
+  "author": "Truong Khoi Nguyen",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/TruongKhoiNguyen/Product-Life-Cycle-Manager-BE/issues"
+  },
+  "homepage": "https://github.com/TruongKhoiNguyen/Product-Life-Cycle-Manager-BE#readme",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
