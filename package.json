@@ -19,6 +19,8 @@
   },
   "homepage": "https://github.com/TruongKhoiNguyen/Product-Life-Cycle-Manager-BE#readme",
   "dependencies": {
-    "express": "^4.18.2"
+    "express": "^4.18.2",
+    "sequelize": "^6.25.6",
+    "sqlite3": "^5.1.2"
   }
 }
