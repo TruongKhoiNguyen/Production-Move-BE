@@ -1,11 +1,25 @@
 const express = require('express')
+const passport = require('passport')
+const session = require('express-session')
+
 const app = express()
 
-// connect to database
-const connection = require('./database/connection')
-connection.authenticate()
-    .then(() => console.log('Connection established successfully'))
-    .catch((err) => console.log('Unable to connect to the database: ', err))
+const { loginCheck } = require('./auth/passport')
+
+loginCheck(passport)
+
+// middlewares
+app.use(express.json())
+app.use(express.urlencoded({ extended: false }))
+
+app.use(session({
+    secret: 'oneboy',
+    saveUninitialized: true,
+    resave: true
+}))
+
+app.use(passport.initialize())
+app.use(passport.session())
 
 // routing
 app.use('/users', require('./routes/user'))
