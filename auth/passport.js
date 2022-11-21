@@ -1,15 +1,17 @@
 const bcrypt = require('bcryptjs')
 const LocalStrategy = require('passport-local').Strategy
 
-const User = require('../models/User')
+const User = require('../models/user')
 
 const loginCheck = passport => {
     passport.use(
         new LocalStrategy({ usernameField: 'name' }, (name, password, done) => {
-            User.find(name).then(user => {
-                if (!user) {
+            User.findAll({ where: { name: name } }).then(result => {
+                if (result.length === 0) {
                     return done(null, false, { message: 'This user does not exist' })
                 }
+
+                const user = result[0]
 
                 bcrypt.compare(password, user.password, (err, isMatch) => {
                     if (err) {
@@ -27,13 +29,13 @@ const loginCheck = passport => {
     )
 
     passport.serializeUser((user, done) => {
-        done(null, user.name)
+        done(null, user.id)
     })
 
-    passport.deserializeUser((name, done) => {
-        User.find(name).then(user => {
-            if (!user) {
-                done(null, user)
+    passport.deserializeUser((id, done) => {
+        User.findAll({ where: { id: id } }).then(result => {
+            if (result.length > 0) {
+                done(null, result[0])
             } else {
                 done(null, {})
             }
