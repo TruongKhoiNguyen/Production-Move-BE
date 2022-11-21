@@ -1,16 +1,10 @@
 const bcrypt = require('bcryptjs')
 const passport = require('passport')
-
-const User = require("../models/User")
+const sequelize = require('sequelize')
+const User = require('../models/index').sequelize.models.User
 
 const testCreate = (req, res) => {
-    User.find('Chizuru Yukimura').then((result) => {
-        if (result) {
-            res.json(result)
-        } else {
-            res.json({ success: false, message: 'This user does not exist' })
-        }
-    })
+    User.create({ name: 'Yukimura Chizuru', password: '123456' })
 }
 
 const registerUser = (req, res) => {
@@ -36,8 +30,9 @@ const registerUser = (req, res) => {
                     if (err) {
                         res.json({ success: false, error: err })
                     } else {
-                        const newUser = new User(name, hash)
-                        newUser.create().then(result => res.json(result))
+                        User.create({ name: name, password: hash }).then((user) => {
+                            res.json({ success: true, data: user, message: 'User created' })
+                        })
                     }
                 })
             })
@@ -55,7 +50,7 @@ const loginUser = (req, res) => {
 
     passport.authenticate('local', (err, user, info) => {
         if (err) {
-            return res.json({ success: false, error: err })
+            return res.json({ success: false, error: err, message: 'Can not authenticate' })
         }
 
         if (!user) {
@@ -64,7 +59,7 @@ const loginUser = (req, res) => {
 
         req.logIn(user, (err) => {
             if (err) {
-                return res.json({ success: false, error: err })
+                return res.json({ success: false, error: err, message: 'Can not login' })
             }
 
             res.json({ success: true, message: 'User authenticated' })

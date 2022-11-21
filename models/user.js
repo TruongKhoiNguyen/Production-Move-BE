@@ -12,7 +12,18 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
     }
+
+    static async checkDuplicated(name) {
+      const result = await User.findAll({
+        where: {
+          name: name
+        }
+      })
+
+      return result.length > 0 ? true : false
+    }
   }
+
   User.init({
     name: DataTypes.STRING,
     password: DataTypes.STRING
@@ -20,5 +31,7 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'User',
   });
+
+
   return User;
 };
