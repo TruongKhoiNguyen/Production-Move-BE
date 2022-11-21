@@ -48,6 +48,10 @@ class User {
 
         return null;
     }
+
+    get db() {
+        return userTable
+    }
 }
 
 module.exports = User

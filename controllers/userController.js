@@ -53,7 +53,23 @@ const loginUser = (req, res) => {
         return
     }
 
-    passport.authenticate('local', { successRedirect: '/users/login/test', failureRedirect: '/users/login/test' })(req, res)
+    passport.authenticate('local', (err, user, info) => {
+        if (err) {
+            return res.json({ success: false, error: err })
+        }
+
+        if (!user) {
+            return res.json({ success: false, message: 'Wrong user name' })
+        }
+
+        req.logIn(user, (err) => {
+            if (err) {
+                return res.json({ success: false, error: err })
+            }
+
+            res.json({ success: true, message: 'User authenticated' })
+        })
+    })(req, res)
 }
 
 const testLogin = (req, res) => {
