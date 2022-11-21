@@ -6,20 +6,13 @@ const app = express()
 
 const { loginCheck } = require('./auth/passport')
 
-loginCheck(passport)
-
 // middlewares
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 
-app.use(session({
-    secret: 'oneboy',
-    saveUninitialized: true,
-    resave: true
-}))
+loginCheck(passport)
 
 app.use(passport.initialize())
-app.use(passport.session())
 
 // routing
 app.use('/users', require('./routes/user'))

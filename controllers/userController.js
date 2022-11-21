@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs')
 const passport = require('passport')
-const sequelize = require('sequelize')
+const jwt = require('jsonwebtoken')
 const User = require('../models/index').sequelize.models.User
 
 const testCreate = (req, res) => {
@@ -48,7 +48,7 @@ const loginUser = (req, res) => {
         return
     }
 
-    passport.authenticate('local', (err, user, info) => {
+    passport.authenticate('local', { session: false }, (err, user, info) => {
         if (err) {
             return res.json({ success: false, error: err, message: 'Can not authenticate' })
         }
@@ -57,19 +57,16 @@ const loginUser = (req, res) => {
             return res.json({ success: false, message: 'Wrong user name' })
         }
 
-        req.logIn(user, (err) => {
-            if (err) {
-                return res.json({ success: false, error: err, message: 'Can not login' })
-            }
+        const body = { id: user.id, name: user.name }
+        const token = jwt.sign(body, 'a')
 
-            res.json({ success: true, message: 'User authenticated' })
-        })
+        res.json({ success: true, user: token, message: 'User authenticated' })
     })(req, res)
 }
 
 const testLogin = (req, res) => {
     // a middleware is used to check unauthenticated access
-    res.json({ sucess: true, message: 'Logged-in' })
+    res.json(req.user)
 }
 
 module.exports = { testCreate, registerUser, loginUser, testLogin }

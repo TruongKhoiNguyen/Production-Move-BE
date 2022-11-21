@@ -1,7 +1,7 @@
 const bcrypt = require('bcryptjs')
 const LocalStrategy = require('passport-local').Strategy
 
-const User = require('../models/user')
+const User = require('../models/index').sequelize.models.User
 
 const loginCheck = passport => {
     passport.use(
