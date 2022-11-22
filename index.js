@@ -5,6 +5,7 @@ const session = require('express-session')
 const app = express()
 
 const { loginCheck } = require('./auth/passport')
+const { jsonErrorHandler } = require('./controllers/utilsController')
 
 // middlewares
 app.use(express.json())
@@ -13,6 +14,9 @@ app.use(express.urlencoded({ extended: false }))
 loginCheck(passport)
 
 app.use(passport.initialize())
+
+// error handling
+app.use(jsonErrorHandler)
 
 // routing
 app.use('/users', require('./routes/user'))

@@ -5,7 +5,7 @@ const protectRoute = (req, res, next) => {
         return next()
     }
 
-    res.json({ success: false, message: 'User not authenticated' })
+    res.status(401).json({ message: 'User not authenticated' })
 }
 
 const authenticateToken = (req, res, next) => {
@@ -13,12 +13,12 @@ const authenticateToken = (req, res, next) => {
     const token = authHeader && authHeader.split(' ')[1]
 
     if (!token) {
-        return res.status(401).json({ success: false, message: 'No token' })
+        return res.status(401).json({ message: 'No token' })
     }
 
     jwt.verify(token, 'a', (err, user) => {
         if (err) {
-            return res.status(403).json({ success: false, message: 'User not authenticated' })
+            return res.status(403).json({ message: 'Unauthorize' })
         }
 
         req.user = user
