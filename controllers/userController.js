@@ -1,10 +1,12 @@
 const bcrypt = require('bcryptjs')
 const passport = require('passport')
 const jwt = require('jsonwebtoken')
+
 const User = require('../models/index').sequelize.models.User
 
-const registerUser = (req, res) => {
-    console.log(req.body)
+const userController = {}
+
+userController.register = (req, res) => {
     const { email, name, password, confirm, location, role } = req.body
 
     if (!name || !password || !confirm || !email || !location || !role) {
@@ -41,7 +43,7 @@ const registerUser = (req, res) => {
     })
 }
 
-const loginUser = (req, res) => {
+userController.login = (req, res) => {
     const { email, password } = req.body
 
     if (!email || !password) {
@@ -65,4 +67,11 @@ const loginUser = (req, res) => {
     })(req, res)
 }
 
-module.exports = { registerUser, loginUser }
+userController.getAll = (req, res) => {
+    User.findAll()
+        .then(result => result.map((user) => ({ id: user.id, email: user.email, name: user.name, role: user.role })))
+        .then(users => res.status(200).json({ users: users }))
+        .catch(err => res.status(500).json({ error: err }))
+}
+
+module.exports = userController
