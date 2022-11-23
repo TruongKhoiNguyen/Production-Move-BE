@@ -5,8 +5,8 @@ const User = require('../models/index').sequelize.models.User
 
 const loginCheck = passport => {
     passport.use(
-        new LocalStrategy({ usernameField: 'name' }, (name, password, done) => {
-            User.findAll({ where: { name: name } }).then(result => {
+        new LocalStrategy({ usernameField: 'email' }, (email, password, done) => {
+            User.findAll({ where: { email: email } }).then(result => {
                 if (result.length === 0) {
                     return done(null, false, { message: 'This user does not exist' })
                 }

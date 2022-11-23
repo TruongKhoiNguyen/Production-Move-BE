@@ -9,11 +9,38 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
+      email: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        unique: true,
+        validate: {
+          isEmail: {
+            msg: 'This is not an email address'
+          }
+        }
+      },
       name: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: false,
+        unique: true
       },
       password: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: false
+      },
+      location: {
+        type: Sequelize.STRING,
+        allowNull: false
+      },
+      role: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        validate: {
+          isIn: {
+            args: [['executive', 'production', 'distribution', 'warranty']],
+            msg: 'This role does not exist'
+          }
+        }
       },
       createdAt: {
         allowNull: false,
