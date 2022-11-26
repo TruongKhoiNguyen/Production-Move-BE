@@ -10,7 +10,18 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      Tracker.belongsTo(models.Product, {
+        foreignKey: 'product_id'
+      })
+
+      Tracker.hasOne(models.ManufacturedProduct)
+      Tracker.hasOne(models.DistributingProduct)
+      Tracker.hasOne(models.SoldProduct)
+      Tracker.hasOne(models.RepairInWaitingProduct)
+      Tracker.hasOne(models.RepairingProduct)
+      Tracker.hasOne(models.DistributingProduct)
+      Tracker.hasOne(models.RepairedProduct)
+      Tracker.hasOne(models.DefectiveProduct)
     }
   }
   Tracker.init({
