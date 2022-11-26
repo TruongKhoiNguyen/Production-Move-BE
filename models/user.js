@@ -10,7 +10,10 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      User.hasMany(models.Warehouse,)
+      User.hasMany(models.RepairingProduct)
+      User.hasMany(models.ManufacturedProduct)
+      User.hasMany(models.DefectedProduct)
     }
 
     static async checkDuplicated(name) {
@@ -27,36 +30,24 @@ module.exports = (sequelize, DataTypes) => {
   User.init({
     email: {
       type: DataTypes.STRING,
-      allowNull: false,
-      unique: true,
       validate: {
         isEmail: {
           msg: 'This is not an email address'
         }
       }
     },
-    name: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      unique: true
-    },
-    password: {
-      type: DataTypes.STRING,
-      allowNull: false
-    },
-    location: {
-      type: DataTypes.STRING,
-      allowNull: false
-    },
+    name: DataTypes.STRING,
+    password: DataTypes.STRING,
+    location: DataTypes.STRING,
     role: {
       type: DataTypes.STRING,
-      allowNull: false,
       validate: {
         isIn: {
           args: [['executive', 'production', 'distribution', 'warranty']],
           msg: 'This role does not exist'
         }
-      }
+      },
+      comment: 'Roles consist of Executive board, Production factory, Distribution agent and Warranty center'
     }
   }, {
     sequelize,
