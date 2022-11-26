@@ -10,7 +10,13 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      DistributingProduct.belongsTo(models.Warehouse, {
+        foreignKey: 'warehouse_id'
+      })
+
+      DistributingProduct.belongsTo(models.Tracker, {
+        foreignKey: 'tracker_id'
+      })
     }
   }
   DistributingProduct.init({
