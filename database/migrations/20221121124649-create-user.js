@@ -13,6 +13,11 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
         unique: true,
+        validate: {
+          isEmail: {
+            msg: 'This is not an email address'
+          }
+        }
       },
       name: {
         type: Sequelize.STRING,
@@ -30,6 +35,12 @@ module.exports = {
       role: {
         type: Sequelize.STRING,
         allowNull: false,
+        validate: {
+          isIn: {
+            args: [['executive', 'production', 'distribution', 'warranty']],
+            msg: 'This role does not exist'
+          }
+        }
       },
       createdAt: {
         allowNull: false,
