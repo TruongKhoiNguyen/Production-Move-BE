@@ -2,14 +2,13 @@ const bcrypt = require('bcryptjs')
 const passport = require('passport')
 const jwt = require('jsonwebtoken')
 
-const User = require('../models/index').sequelize.models.User
+const User = require('../models/user')
 
-const userController = {}
 
-userController.register = (req, res) => {
-    const { email, name, password, confirm, location, role } = req.body
+const register = (req, res) => {
+    const { email, name, password, confirm, role } = req.body
 
-    if (!name || !password || !confirm || !email || !location || !role) {
+    if (!name || !password || !confirm || !email || !role) {
         return res.status(400).json({ message: 'Fill empty field' })
     }
 
@@ -18,7 +17,7 @@ userController.register = (req, res) => {
     }
 
     if (password !== confirm) {
-        return res.status(400).json({ success: false, message: 'Password must match' })
+        return res.status(400).json({ message: 'Password must match' })
     }
 
     User.checkDuplicated(name).then((isDuplicated) => {
@@ -31,10 +30,10 @@ userController.register = (req, res) => {
                     if (err) {
                         res.status(500).json({ error: err })
                     } else {
-                        User.create({ email: email, name: name, password: hash, location: location, role: role }).then((user) => {
+                        User.create({ email: email, name: name, password: hash, role: role }).then((user) => {
                             res.status(201).json({ data: user, message: 'User created' })
                         }).catch(err => {
-                            res.status(500).json({ error: err })
+                            res.status(500).json({ error: err, message: 'Can not create user' })
                         })
                     }
                 })
@@ -43,7 +42,7 @@ userController.register = (req, res) => {
     })
 }
 
-userController.login = (req, res) => {
+const login = (req, res) => {
     const { email, password } = req.body
 
     if (!email || !password) {
@@ -67,11 +66,15 @@ userController.login = (req, res) => {
     })(req, res)
 }
 
-userController.getAll = (req, res) => {
+const getAll = (req, res) => {
     User.findAll()
         .then(result => result.map((user) => ({ id: user.id, email: user.email, name: user.name, role: user.role })))
         .then(users => res.status(200).json({ users: users }))
         .catch(err => res.status(500).json({ error: err }))
 }
 
-module.exports = userController
+module.exports = {
+    register,
+    login,
+    getAll
+}
