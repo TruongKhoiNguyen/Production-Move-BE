@@ -1,4 +1,5 @@
 const { DataTypes } = require('sequelize')
+const Warehouse = require('./warehouse')
 const sequelize = require('../database/models/index').sequelize
 
 const User = sequelize.define('User', {
@@ -19,6 +20,12 @@ const User = sequelize.define('User', {
 }, {
   tableName: 'users'
 })
+
+// associations
+User.associate = (models) => {
+  User.hasMany(models.Warehouse, { foreign_key: 'user_id' })
+}
+
 
 // methods
 User.checkDuplicated = async (name) => {
