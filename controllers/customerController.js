@@ -1,4 +1,4 @@
-const Customer = require('../models/customer')
+const Customer = require('../models/index').Customer
 
 const create = (req, res) => {
     const { name, email, phone_number } = req.body

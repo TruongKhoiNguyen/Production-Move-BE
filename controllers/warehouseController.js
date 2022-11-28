@@ -1,4 +1,4 @@
-const Warehouse = require('../models/warehouse')
+const { Warehouse } = require('../models/index')
 
 const create = (req, res) => {
     const { location, user_id } = req.body
