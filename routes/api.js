@@ -5,6 +5,7 @@ const warehouse = require('./warehouse')
 const customer = require('./customer')
 const product = require('./product')
 const tracker = require('./tracker')
+const manufacturing = require('./manufacturing')
 
 const router = express.Router()
 
@@ -13,5 +14,7 @@ router.use('/warehouses', warehouse)
 router.use('/customers', customer)
 router.use('/products', product)
 router.use('/trackers', tracker)
+
+router.use('/status/manufacturing', manufacturing)
 
 module.exports = router
