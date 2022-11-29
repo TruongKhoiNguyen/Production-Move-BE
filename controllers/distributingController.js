@@ -1,4 +1,4 @@
-const { Manufacturing } = require('../models/index')
+const { Distributing } = require('../models/index')
 
 const create = (req, res) => {
     const { tracker_id, warehouse_id } = req.body
@@ -7,14 +7,14 @@ const create = (req, res) => {
         return res.status(400).json({ message: 'Fill emtpy field' })
     }
 
-    Manufacturing.create({ tracker_id: tracker_id, warehouse_id: warehouse_id })
-        .then(result => res.status(201).json({ manufacturing: result }))
+    Distributing.create({ tracker_id: tracker_id, warehouse_id: warehouse_id })
+        .then(result => res.status(201).json({ distributing: result }))
         .catch(err => res.status(500).json({ error: err }))
 }
 
 const getAll = (req, res) => {
-    Manufacturing.findAll()
-        .then(result => res.status(200).json({ manufacturing: result }))
+    Distributing.findAll()
+        .then(result => res.status(200).json({ distributing: result }))
         .catch(err => res.status(500).json({ error: err }))
 }
 
