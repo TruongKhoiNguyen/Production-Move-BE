@@ -1,13 +1,13 @@
 const { Sold } = require('../models/index')
 
 const create = (req, res) => {
-    const { tracker_id, warehouse_id } = req.body
+    const { tracker_id, customer_id } = req.body
 
-    if (!tracker_id || !warehouse_id) {
+    if (!tracker_id || !customer_id) {
         return res.status(400).json({ message: 'Fill emtpy field' })
     }
 
-    Sold.create({ tracker_id: tracker_id, warehouse_id: warehouse_id })
+    Sold.create({ tracker_id: tracker_id, customer_id: customer_id })
         .then(result => res.status(201).json({ sold: result }))
         .catch(err => res.status(500).json({ error: err }))
 }
