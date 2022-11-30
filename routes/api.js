@@ -9,6 +9,7 @@ const manufacturing = require('./manufacturing')
 const distributing = require('./distributing')
 const sold = require('./sold')
 const repairing = require('./repairing')
+const defect = require('./defect')
 
 const router = express.Router()
 
@@ -22,5 +23,6 @@ router.use('/status/manufacturing', manufacturing)
 router.use('/status/distributing', distributing)
 router.use('/status/sold', sold)
 router.use('/status/repairing', repairing)
+router.use('/status/defects', defect)
 
 module.exports = router
