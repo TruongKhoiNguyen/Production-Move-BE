@@ -8,6 +8,7 @@ const tracker = require('./tracker')
 const manufacturing = require('./manufacturing')
 const distributing = require('./distributing')
 const sold = require('./sold')
+const repairing = require('./repairing')
 
 const router = express.Router()
 
@@ -20,5 +21,6 @@ router.use('/trackers', tracker)
 router.use('/status/manufacturing', manufacturing)
 router.use('/status/distributing', distributing)
 router.use('/status/sold', sold)
+router.use('/status/repairing', repairing)
 
 module.exports = router
