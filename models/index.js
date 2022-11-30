@@ -6,6 +6,7 @@ const Tracker = require('./tracker')
 
 const Manufacturing = require('./manufacturing')
 const Distributing = require('./distributing')
+const Sold = require('./sold')
 
 User.hasMany(Warehouse, { foreignKey: 'user_id' })
 Warehouse.belongsTo(User, { foreignKey: 'user_id' })
@@ -23,6 +24,11 @@ Distributing.belongsTo(Tracker, { foreignKey: 'tracker_id' })
 Warehouse.hasOne(Distributing, { foreignKey: 'warehouse_id' })
 Distributing.belongsTo(Warehouse, { foreignKey: 'warehouse_id' })
 
+Tracker.hasOne(Sold, { foreignKey: 'tracker_id' })
+Sold.belongsTo(Tracker, { foreignKey: 'tracker_id' })
+Customer.hasOne(Sold, { foreignKey: 'customer_id' })
+Sold.belongsTo(Customer, { foreignKey: 'customer_id' })
+
 module.exports = {
     User,
     Warehouse,
@@ -30,5 +36,6 @@ module.exports = {
     Product,
     Tracker,
     Manufacturing,
-    Distributing
+    Distributing,
+    Sold
 }
