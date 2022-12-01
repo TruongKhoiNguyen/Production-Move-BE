@@ -60,7 +60,8 @@ const login = (req, res) => {
         }
 
         const body = { id: user.id, email: user.email, name: user.name, role: user.role }
-        const token = jwt.sign(body, 'a')
+        const secret = process.env.JWT_SECRET
+        const token = jwt.sign(body, secret)
 
         res.status(200).json({ user: token, message: 'User authenticated' })
     })(req, res)

@@ -1,9 +1,11 @@
 const express = require('express')
+const dotenv = require('dotenv')
 const passport = require('passport')
 
 const { loginCheck } = require('./auth/passport')
 loginCheck(passport)
 
+dotenv.config()
 const app = express()
 
 // middlewares
