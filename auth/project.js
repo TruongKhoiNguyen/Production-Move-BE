@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken')
+const { Request, Response } = require('express')
 
 const protectRoute = (req, res, next) => {
     if (req.isAuthenticated()) {
@@ -8,6 +9,13 @@ const protectRoute = (req, res, next) => {
     res.status(401).json({ message: 'User not authenticated' })
 }
 
+/**
+ * Extract login token from request and authenticate user
+ * @param {Request} req 
+ * @param {Response} res 
+ * @param {*} next 
+ * @returns 
+ */
 const authenticateToken = (req, res, next) => {
     const authHeader = req.headers.authorization
     const token = authHeader && authHeader.split(' ')[1]
@@ -27,7 +35,36 @@ const authenticateToken = (req, res, next) => {
     })
 }
 
+/**
+ * Create a middleware to authorize user
+ * @param {Array.<String>} roles - An array of string contains the role that can pass 
+ * @returns a middleware that check user permission to access a certain path
+ */
+const checkRole = (roles) => ((req, res, next) => {
+    const userRole = req.user.role
+    console.log(userRole)
+
+    if (!userRole) {
+        return res.status(400).json({ message: 'Can not find role in request' })
+    }
+
+    if (roles.includes(userRole)) {
+        next()
+    } else {
+        res.status(403).json({ message: 'Can not access this route' })
+    }
+})
+
+/**
+ * Combine authentication and authorization
+ * @param {Array.<String>} roles - An array of string contains the role that can pass  
+ * @returns {Array.<Function>} An array contain middleware for both authentication and authorization
+ */
+const createAuthorizer = (roles) => [authenticateToken, checkRole(roles)]
+
 module.exports = {
     protectRoute,
-    authenticateToken
+    authenticateToken,
+    checkRole,
+    createAuthorizer
 }
