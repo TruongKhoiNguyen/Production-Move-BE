@@ -1,5 +1,11 @@
 const { Distributing } = require('../models/index')
 
+/**
+ * Add information about products that is currently on sale
+ * @param {Request} req - Must contains tracker_id, warehouse_id
+ * @param {Response} res 
+ * @returns 
+ */
 const create = (req, res) => {
     const { tracker_id, warehouse_id } = req.body
 
@@ -12,6 +18,11 @@ const create = (req, res) => {
         .catch(err => res.status(500).json({ error: err }))
 }
 
+/**
+ * Get all information about product that is currently on sale
+ * @param {Request} req 
+ * @param {Response} res 
+ */
 const getAll = (req, res) => {
     Distributing.findAll()
         .then(result => res.status(200).json({ distributing: result }))

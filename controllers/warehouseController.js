@@ -1,5 +1,11 @@
 const { Warehouse } = require('../models/index')
 
+/**
+ * Create and save new warehouse to the database
+ * @param {Request} req - Must contains location, user_id
+ * @param {Response} res 
+ * @returns 
+ */
 const create = (req, res) => {
     const { location, user_id } = req.body
 
@@ -12,6 +18,11 @@ const create = (req, res) => {
         .catch(err => res.status(500).json({ error: err, message: 'Can not create new warehouse' }))
 }
 
+/**
+ * Get all warehouses information from the database
+ * @param {Request} req 
+ * @param {Response} res 
+ */
 const getAll = (req, res) => {
     Warehouse.findAll()
         .then(result => res.status(200).json({ warehouses: result }))

@@ -1,5 +1,11 @@
 const { Defect } = require('../models/index')
 
+/**
+ * Save new information about a product that is defective and has been returned to production factory
+ * @param {Request} req - Must contain tracker_id, warehouse_id
+ * @param {Response} res 
+ * @returns 
+ */
 const create = (req, res) => {
     const { tracker_id, warehouse_id } = req.body
 
@@ -12,6 +18,11 @@ const create = (req, res) => {
         .catch(err => res.status(500).json({ error: err }))
 }
 
+/**
+ * Get all information about defective products 
+ * @param {Request} req 
+ * @param {Response} res 
+ */
 const getAll = (req, res) => {
     Defect.findAll()
         .then(result => res.status(200).json({ defects: result }))

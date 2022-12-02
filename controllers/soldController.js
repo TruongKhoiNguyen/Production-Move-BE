@@ -1,5 +1,11 @@
 const { Sold } = require('../models/index')
 
+/**
+ * Add new information about a product that has been sold to a customer
+ * @param {Request} req - Must contains tracker_id, customer_id 
+ * @param {Response} res 
+ * @returns 
+ */
 const create = (req, res) => {
     const { tracker_id, customer_id } = req.body
 
@@ -12,6 +18,11 @@ const create = (req, res) => {
         .catch(err => res.status(500).json({ error: err }))
 }
 
+/**
+ * Get all information about products that have been sold to a customer
+ * @param {Request} req 
+ * @param {Response} res 
+ */
 const getAll = (req, res) => {
     Sold.findAll()
         .then(result => res.status(200).json({ sold: result }))
