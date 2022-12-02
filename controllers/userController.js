@@ -4,7 +4,12 @@ const jwt = require('jsonwebtoken')
 
 const User = require('../models/index').User
 
-
+/**
+ * Register new user to the database
+ * @param {Request} req - This request must contain email, name, password, confirm, role
+ * @param {Response} res 
+ * @returns 
+ */
 const register = (req, res) => {
     const { email, name, password, confirm, role } = req.body
 
@@ -42,6 +47,12 @@ const register = (req, res) => {
     })
 }
 
+/**
+ * Take login information and return a token for accessing other routes
+ * @param {Request} req - Must contains email, password
+ * @param {Response} res 
+ * @returns 
+ */
 const login = (req, res) => {
     const { email, password } = req.body
 
@@ -67,6 +78,11 @@ const login = (req, res) => {
     })(req, res)
 }
 
+/**
+ * Get all users in the database
+ * @param {Request} req 
+ * @param {Response} res 
+ */
 const getAll = (req, res) => {
     User.findAll()
         .then(result => result.map((user) => ({ id: user.id, email: user.email, name: user.name, role: user.role })))

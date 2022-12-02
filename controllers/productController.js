@@ -1,5 +1,11 @@
 const { Product } = require('../models/index')
 
+/**
+ * Add new product to the database
+ * @param {Request} req - Must contains product_line, model, lot_number, serial_number 
+ * @param {Response} res 
+ * @returns 
+ */
 const create = (req, res) => {
     const { product_line, model, lot_number, serial_number } = req.body
 
@@ -12,6 +18,11 @@ const create = (req, res) => {
         .catch(err => res.status(500).json({ error: err }))
 }
 
+/**
+ * Get all basic information about products
+ * @param {Request} req 
+ * @param {Response} res 
+ */
 const getAll = (req, res) => {
     Product.findAll()
         .then(result => res.status(200).json({ products: result }))
