@@ -67,7 +67,7 @@ const login = (req, res) => {
         }
 
         if (!user) {
-            return res.status(400).json({ message: 'Wrong user name' })
+            return res.status(400).json({ message: 'This user does not exist' })
         }
 
         const body = { id: user.id, email: user.email, name: user.name, role: user.role }
