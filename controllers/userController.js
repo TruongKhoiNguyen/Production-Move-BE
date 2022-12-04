@@ -80,11 +80,23 @@ const login = (req, res) => {
 
 /**
  * Get all users in the database
+ * Add limit param to limit the number of result (default 10)
+ * Add page param to change page (default 1)
  * @param {Request} req 
  * @param {Response} res 
  */
 const getAll = (req, res) => {
-    User.findAll()
+    let limit = 10
+    let offset = 0
+
+    try {
+        limit = parseInt(req.query.limit) || limit
+        offset = (parseInt(req.query.page) - 1) * limit || offset
+    } catch (err) {
+        return res.status(400).json({ error: err })
+    }
+
+    User.findAll({ limit: limit, offset: offset })
         .then(result => result.map((user) => ({ id: user.id, email: user.email, name: user.name, role: user.role })))
         .then(users => res.status(200).json({ users: users }))
         .catch(err => res.status(500).json({ error: err }))
