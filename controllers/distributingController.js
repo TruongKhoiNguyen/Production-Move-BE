@@ -20,11 +20,24 @@ const create = (req, res) => {
 
 /**
  * Get all information about product that is currently on sale
+ * 
+ * Add limit param to limit the number of result (default 10)
+ * Add page param to change page (default 1)
  * @param {Request} req 
  * @param {Response} res 
  */
 const getAll = (req, res) => {
-    Distributing.findAll()
+    let limit = 10
+    let offset = 0
+
+    try {
+        limit = parseInt(req.query.limit) || limit
+        offset = (parseInt(req.query.page) - 1) * limit || offset
+    } catch (err) {
+        return res.status(400).json({ error: err })
+    }
+
+    Distributing.findAll({ limit: limit, offset: offset })
         .then(result => res.status(200).json({ distributing: result }))
         .catch(err => res.status(500).json({ error: err }))
 }
