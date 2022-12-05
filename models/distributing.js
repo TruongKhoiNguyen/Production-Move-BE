@@ -8,6 +8,11 @@ const Distributing = sequelize.define('Distributing', {
     tableName: 'distributing'
 })
 
+Distributing.setup = (models) => {
+    Distributing.belongsTo(models.Tracker, { foreignKey: 'tracker_id' })
+    Distributing.belongsTo(models.Warehouse, { foreignKey: 'warehouse_id' })
+}
+
 Distributing.sync()
 
 module.exports = Distributing
