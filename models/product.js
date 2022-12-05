@@ -15,6 +15,10 @@ const Product = sequelize.define('Product', {
     tableName: 'products'
 })
 
+Product.setup = (models) => {
+    Product.hasMany(models.Tracker, { foreignKey: 'product_id' })
+}
+
 Product.sync()
 
 module.exports = Product
