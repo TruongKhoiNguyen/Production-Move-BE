@@ -8,6 +8,11 @@ const Defect = sequelize.define('Defect', {
     tableName: 'defects'
 })
 
+Defect.setup = (models) => {
+    Defect.belongsTo(models.Tracker, { foreignKey: 'tracker_id' })
+    Defect.belongsTo(models.Warehouse, { foreignKey: 'warehouse_id' })
+}
+
 Defect.sync()
 
 module.exports = Defect
