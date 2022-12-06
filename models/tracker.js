@@ -29,6 +29,14 @@ const Tracker = sequelize.define('Tracker', {
     tableName: 'trackers'
 })
 
+Tracker.setup = (models) => {
+    Tracker.hasOne(models.Manufacturing, { foreignKey: 'tracker_id' })
+    Tracker.hasOne(models.Distributing, { foreignKey: 'tracker_id' })
+    Tracker.hasOne(models.Sold, { foreignKey: 'tracker_id' })
+    Tracker.hasOne(models.Repairing, { foreignKey: 'tracker_id' })
+    Tracker.hasOne(models.Defect, { foreignKey: 'tracker_id' })
+}
+
 Tracker.sync()
 
 module.exports = Tracker
