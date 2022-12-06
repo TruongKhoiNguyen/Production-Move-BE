@@ -22,7 +22,4 @@ Warehouse.setup = (models) => {
     Warehouse.hasMany(models.Defect, { foreignKey: 'warehouse_id' })
 }
 
-
-Warehouse.sync()
-
 module.exports = Warehouse

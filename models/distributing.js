@@ -13,6 +13,4 @@ Distributing.setup = (models) => {
     Distributing.belongsTo(models.Warehouse, { foreignKey: 'warehouse_id' })
 }
 
-Distributing.sync()
-
 module.exports = Distributing

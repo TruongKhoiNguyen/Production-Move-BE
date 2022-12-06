@@ -38,6 +38,4 @@ User.setup = (models) => {
 
 }
 
-User.sync()
-
 module.exports = User
