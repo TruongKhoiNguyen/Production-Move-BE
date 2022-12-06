@@ -2,7 +2,7 @@ const bcrypt = require('bcryptjs')
 const passport = require('passport')
 const jwt = require('jsonwebtoken')
 
-const User = require('../models/index').User
+const { User } = require('../models/index').models
 
 /**
  * Register new user to the database
