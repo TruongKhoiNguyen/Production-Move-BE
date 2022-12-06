@@ -21,21 +21,21 @@ const User = sequelize.define('User', {
   tableName: 'users'
 })
 
-// associations
-User.associate = (models) => {
-  User.hasMany(models.Warehouse, { foreign_key: 'user_id' })
-}
+User.setup = (models) => {
+  User.hasMany(models.Warehouse, { foreignKey: 'user_id' })
 
 
-// methods
-User.checkDuplicated = async (name) => {
-  const user = await User.findAll({
-    where: {
-      name: name
-    }
-  })
+  // methods
+  User.checkDuplicated = async (name) => {
+    const user = await User.findAll({
+      where: {
+        name: name
+      }
+    })
 
-  return user.length > 0 ? true : false
+    return user.length > 0 ? true : false
+  }
+
 }
 
 User.sync()
