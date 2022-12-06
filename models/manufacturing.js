@@ -8,6 +8,11 @@ const Manufacturing = sequelize.define('Manufacturing', {
     tableName: 'manufacturing'
 })
 
+Manufacturing.setup = (models) => {
+    Manufacturing.belongsTo(models.Tracker, { foreignKey: 'tracker_id' })
+    Manufacturing.belongsTo(models.Warehouse, { foreignKey: 'warehouse_id' })
+}
+
 Manufacturing.sync()
 
 module.exports = Manufacturing

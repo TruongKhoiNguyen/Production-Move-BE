@@ -1,4 +1,4 @@
-const { Sold } = require('../models/index')
+const { Sold } = require('../models/index').models
 
 /**
  * Add new information about a product that has been sold to a customer

@@ -8,6 +8,11 @@ const Sold = sequelize.define('Sold', {
     tableName: 'sold'
 })
 
+Sold.setup = (models) => {
+    Sold.belongsTo(models.Tracker, { foreignKey: 'tracker_id' })
+    Sold.belongsTo(models.Customer, { foreignKey: 'customer_id' })
+}
+
 Sold.sync()
 
 module.exports = Sold

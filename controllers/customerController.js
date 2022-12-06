@@ -1,4 +1,4 @@
-const Customer = require('../models/index').Customer
+const { Customer } = require('../models/index').models
 
 /**
  * Register new customer to the database
