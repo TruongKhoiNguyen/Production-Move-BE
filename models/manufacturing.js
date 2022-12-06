@@ -13,6 +13,4 @@ Manufacturing.setup = (models) => {
     Manufacturing.belongsTo(models.Warehouse, { foreignKey: 'warehouse_id' })
 }
 
-Manufacturing.sync()
-
 module.exports = Manufacturing

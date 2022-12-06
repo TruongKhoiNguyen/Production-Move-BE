@@ -37,6 +37,4 @@ Tracker.setup = (models) => {
     Tracker.hasOne(models.Defect, { foreignKey: 'tracker_id' })
 }
 
-Tracker.sync()
-
 module.exports = Tracker

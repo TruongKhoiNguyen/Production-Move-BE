@@ -13,6 +13,4 @@ Defect.setup = (models) => {
     Defect.belongsTo(models.Warehouse, { foreignKey: 'warehouse_id' })
 }
 
-Defect.sync()
-
 module.exports = Defect

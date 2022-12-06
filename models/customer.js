@@ -23,6 +23,4 @@ Customer.setup = (models) => {
     Customer.hasMany(models.Sold, { foreign_key: 'customer_id' })
 }
 
-Customer.sync()
-
 module.exports = Customer

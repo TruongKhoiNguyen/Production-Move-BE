@@ -15,6 +15,4 @@ Repairing.setup = (models) => {
     Repairing.belongsTo(models.Warehouse, { as: 'warranty', foreignKey: 'warranty_center_warehouse_id' })
 }
 
-Repairing.sync()
-
 module.exports = Repairing

@@ -13,6 +13,4 @@ Sold.setup = (models) => {
     Sold.belongsTo(models.Customer, { foreignKey: 'customer_id' })
 }
 
-Sold.sync()
-
 module.exports = Sold
