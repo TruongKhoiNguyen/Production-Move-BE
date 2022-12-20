@@ -9,10 +9,6 @@ const Warehouse = sequelize.define('Warehouse', {
     tableName: 'warehouses'
 })
 
-Warehouse.associate = (models) => {
-
-}
-
 Warehouse.setup = (models) => {
     Warehouse.belongsTo(models.User, { foreign_key: 'user_id' })
     Warehouse.hasMany(models.Manufacturing, { foreignKey: 'warehouse_id' })

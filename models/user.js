@@ -24,6 +24,9 @@ const User = sequelize.define('User', {
 User.setup = (models) => {
   User.hasMany(models.Warehouse, { foreignKey: 'user_id' })
 
+  User.hasMany(models.Request, { foreignKey: 'distribution_agent_id' })
+  User.hasMany(models.Request, { foreignKey: 'manufacturing_factory_id' })
+
 
   // methods
   User.checkDuplicated = async (name) => {

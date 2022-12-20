@@ -10,6 +10,7 @@ const distributing = require('./distributing')
 const sold = require('./sold')
 const repairing = require('./repairing')
 const defect = require('./defect')
+const request = require('./request')
 
 const router = express.Router()
 
@@ -18,6 +19,7 @@ router.use('/warehouses', warehouse)
 router.use('/customers', customer)
 router.use('/products', product)
 router.use('/trackers', tracker)
+router.use('/requests', request)
 
 router.use('/status/manufacturing', manufacturing)
 router.use('/status/distributing', distributing)
