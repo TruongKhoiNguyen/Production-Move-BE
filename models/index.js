@@ -12,6 +12,7 @@ modelsManager.register('Sold', require('./sold'))
 modelsManager.register('Tracker', require('./tracker'))
 modelsManager.register('User', require('./user'))
 modelsManager.register('Warehouse', require('./warehouse'))
+modelsManager.register('Request', require('./request'))
 
 modelsManager.setup()
 
