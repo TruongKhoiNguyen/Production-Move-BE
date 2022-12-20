@@ -1,4 +1,4 @@
-const { Defect } = require('../models/index').models
+const { Defect } = require('../models/_index').models
 
 /**
  * Save new information about a product that is defective and has been returned to production factory

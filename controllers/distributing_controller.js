@@ -1,4 +1,4 @@
-const { Distributing } = require('../models/index').models
+const { Distributing } = require('../models/_index').models
 
 /**
  * Add information about products that is currently on sale

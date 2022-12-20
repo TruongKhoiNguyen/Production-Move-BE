@@ -1,4 +1,4 @@
-const { Manufacturing } = require('../models/index').models
+const { Manufacturing } = require('../models/_index').models
 
 /**
  * Add new information about a product that has just been produced and not yet distributing

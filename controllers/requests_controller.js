@@ -1,4 +1,4 @@
-const { Request } = require('../models/index').models
+const { Request } = require('../models/_index').models
 
 const create = async (req, res) => {
     const { distribution, manufacturing, model } = req.body

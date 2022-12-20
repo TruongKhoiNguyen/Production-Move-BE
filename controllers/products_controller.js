@@ -1,4 +1,4 @@
-const { Product } = require('../models/index').models
+const { Product } = require('../models/_index').models
 
 /**
  * Add new product to the database

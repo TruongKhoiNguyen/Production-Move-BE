@@ -1,4 +1,4 @@
-const { Warehouse } = require('../models/index').models
+const { Warehouse } = require('../models/_index').models
 
 /**
  * Create and save new warehouse to the database

@@ -1,4 +1,4 @@
-const { Repairing } = require('../models/index').models
+const { Repairing } = require('../models/_index').models
 
 /**
  * Add new information about a product that is having problem and need repairing
