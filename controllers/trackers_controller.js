@@ -1,4 +1,4 @@
-const { Tracker } = require('../models/index').models
+const { Tracker } = require('../models/_index').models
 
 /**
  * Add new tracker that tracks status of a particular product
