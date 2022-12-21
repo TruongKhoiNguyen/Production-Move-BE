@@ -1,9 +1,9 @@
-const bcrypt = require('bcryptjs')
 const passport = require('passport')
 const jwt = require('jsonwebtoken')
 
-const UserManager = require('../models/users_manager')
-const User = UserManager.User
+const UsersManager = require('../models/users_manager')
+const Encryption = require('../models/encryption')
+const User = UsersManager.User
 
 
 /**
@@ -12,7 +12,7 @@ const User = UserManager.User
  * @param {Response} res 
  * @returns 
  */
-const register = (req, res) => {
+const register = async (req, res) => {
     const { email, name, password, confirm, role } = req.body
 
     if (!name || !password || !confirm || !email || !role) {
@@ -27,26 +27,25 @@ const register = (req, res) => {
         return res.status(400).json({ message: 'Password must match' })
     }
 
-    UserManager.checkDuplicated(name).then((isDuplicated) => {
-        if (isDuplicated) {
-            res.status(400).json({ message: 'User already existed' })
-        } else {
-            // hashing password
-            bcrypt.genSalt(10, (err, salt) => {
-                bcrypt.hash(password, salt, (err, hash) => {
-                    if (err) {
-                        res.status(500).json({ error: err })
-                    } else {
-                        User.create({ email: email, name: name, password: hash, role: role }).then((user) => {
-                            res.status(201).json({ data: user, message: 'User created' })
-                        }).catch(err => {
-                            res.status(500).json({ error: err, message: 'Can not create user' })
-                        })
-                    }
-                })
-            })
-        }
-    })
+    const isDuplicated = await UsersManager.checkDuplicated(email)
+
+    if (isDuplicated) {
+        return res.status(400).json({ message: 'User already existed' })
+    }
+
+    try {
+        const hash = await Encryption.hash(password)
+
+        User.create({ email: email, name: name, password: hash, role: role }).then((user) => {
+            res.status(201).json({ data: user, message: 'User created' })
+        }).catch(err => {
+            res.status(500).json({ error: err, message: 'Can not create user' })
+        })
+
+    } catch (err) {
+        res.status(500).json({ error: err })
+    }
+
 }
 
 /**
