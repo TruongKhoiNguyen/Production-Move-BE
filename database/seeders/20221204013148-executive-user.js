@@ -30,7 +30,7 @@ module.exports = {
       password: await hashPassword('123456'),
       role: 'production',
       createdAt: new Date(),
-      updatedAt: new Date()
+      updatedAt: new Date(),
     },
     {
       email: 'marunochi@apple.com',
