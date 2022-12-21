@@ -7,8 +7,8 @@ class UsersManager {
         return this.#User
     }
 
-    static async checkDuplicated(name) {
-        const users = await this.#User.findAll({ where: { name: name } })
+    static async checkDuplicated(email) {
+        const users = await this.#User.findAll({ where: { email: email } })
 
         if (users.length === 0) {
             return false
