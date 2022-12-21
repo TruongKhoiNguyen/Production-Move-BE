@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken')
 
 const UsersManager = require('../models/users_manager')
 const Encryption = require('../models/encryption')
+const Response = require('../views/response')
 const User = UsersManager.User
 
 
@@ -16,34 +17,34 @@ const register = async (req, res) => {
     const { email, name, password, confirm, role } = req.body
 
     if (!name || !password || !confirm || !email || !role) {
-        return res.status(400).json({ message: 'Fill empty field' })
+        return Response.badRequest(res, 'Fill empty field')
     }
 
     if (role === 'executive') {
-        return res.status(400).json({ message: 'This role is can not be registered' })
+        return Response.badRequest(res, 'This role is can not be registered')
     }
 
     if (password !== confirm) {
-        return res.status(400).json({ message: 'Password must match' })
+        return Response.badRequest(res, 'Password must match')
     }
 
     const isDuplicated = await UsersManager.checkDuplicated(email)
 
     if (isDuplicated) {
-        return res.status(400).json({ message: 'User already existed' })
+        return Response.badRequest(res, 'User already existed')
     }
 
     try {
         const hash = await Encryption.hash(password)
 
         User.create({ email: email, name: name, password: hash, role: role }).then((user) => {
-            res.status(201).json({ data: user, message: 'User created' })
+            Response.created(res, { data: user, message: 'User created' })
         }).catch(err => {
-            res.status(500).json({ error: err, message: 'Can not create user' })
+            Response.internalServerError(res, err)
         })
 
     } catch (err) {
-        res.status(500).json({ error: err })
+        Response.internalServerError(res, err)
     }
 
 }
@@ -54,28 +55,27 @@ const register = async (req, res) => {
  * @param {Response} res 
  * @returns 
  */
-const login = (req, res) => {
+const login = async (req, res) => {
     const { email, password } = req.body
 
     if (!email || !password) {
-        res.status(400).json({ message: 'Empty field' })
-        return
+        return Response.badRequest(res, 'Fill empty field')
     }
 
     passport.authenticate('local', { session: false }, (err, user, info) => {
         if (err) {
-            return res.status(400).json({ error: err, message: 'Can not authenticate' })
+            return Response.badRequest(res, err)
         }
 
         if (!user) {
-            return res.status(400).json({ message: 'This user does not exist' })
+            return Response.badRequest(res, 'This user does not exist')
         }
 
         const body = { id: user.id, email: user.email, name: user.name, role: user.role }
         const secret = process.env.JWT_SECRET
         const token = jwt.sign(body, secret)
 
-        res.status(200).json({ token: token, user: body, message: 'User authenticated' })
+        Response.ok(res, { token: token, user: body, message: 'User authenticated' })
     })(req, res)
 }
 
@@ -86,7 +86,7 @@ const login = (req, res) => {
  * @param {Request} req 
  * @param {Response} res 
  */
-const getAll = (req, res) => {
+const getAll = async (req, res) => {
     let limit = 10
     let offset = 0
 
@@ -94,13 +94,13 @@ const getAll = (req, res) => {
         limit = parseInt(req.query.limit) || limit
         offset = (parseInt(req.query.page) - 1) * limit || offset
     } catch (err) {
-        return res.status(400).json({ error: err })
+        return Response.badRequest(res, err)
     }
 
     User.findAll({ limit: limit, offset: offset })
         .then(result => result.map((user) => ({ id: user.id, email: user.email, name: user.name, role: user.role })))
-        .then(users => res.status(200).json({ users: users }))
-        .catch(err => res.status(500).json({ error: err }))
+        .then(users => Response.ok(res, { users: users }))
+        .catch(err => Response.internalServerError(res, err))
 }
 
 module.exports = {
