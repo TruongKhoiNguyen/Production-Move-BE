@@ -2,7 +2,9 @@ const bcrypt = require('bcryptjs')
 const passport = require('passport')
 const jwt = require('jsonwebtoken')
 
-const { User } = require('../models/_index').models
+const UserManager = require('../models/users_manager')
+const User = UserManager.User
+
 
 /**
  * Register new user to the database
@@ -25,7 +27,7 @@ const register = (req, res) => {
         return res.status(400).json({ message: 'Password must match' })
     }
 
-    User.checkDuplicated(name).then((isDuplicated) => {
+    UserManager.checkDuplicated(name).then((isDuplicated) => {
         if (isDuplicated) {
             res.status(400).json({ message: 'User already existed' })
         } else {
