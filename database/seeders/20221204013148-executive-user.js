@@ -41,7 +41,7 @@ module.exports = {
       updatedAt: new Date()
     },
     {
-      email: 'shinjuku_care@apple.com',
+      email: 'shinjuku-care@apple.com',
       name: 'Shinjuku Warranty Center',
       password: await hashPassword('123456'),
       role: 'warranty',
