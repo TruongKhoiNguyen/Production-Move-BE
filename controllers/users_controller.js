@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken')
 const UsersManager = require('../models/users_manager')
 const Encryption = require('../models/encryption')
 const Response = require('../views/response')
+const ControllerUtil = require('./controller_utils')
 const User = UsersManager.User
 
 
@@ -16,7 +17,7 @@ const User = UsersManager.User
 const register = async (req, res) => {
     const { email, name, password, confirm, role } = req.body
 
-    if (!name || !password || !confirm || !email || !role) {
+    if (ControllerUtil.checkEmptyFields(email, name, password, confirm, role)) {
         return Response.badRequest(res, 'Fill empty field')
     }
 
@@ -58,7 +59,7 @@ const register = async (req, res) => {
 const login = async (req, res) => {
     const { email, password } = req.body
 
-    if (!email || !password) {
+    if (ControllerUtil.checkEmptyFields(email, password)) {
         return Response.badRequest(res, 'Fill empty field')
     }
 
