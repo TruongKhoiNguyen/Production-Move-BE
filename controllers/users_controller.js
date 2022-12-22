@@ -99,7 +99,7 @@ const getAll = async (req, res) => {
 
     User.findAll({ limit: limit, offset: offset })
         .then(result => result.map((user) => ({ id: user.id, email: user.email, name: user.name, role: user.role })))
-        .then(users => Response.ok(res, { users: users }))
+        .then(users => Response.ok(res, { data: users }))
         .catch(err => Response.internalServerError(res, err))
 }
 
