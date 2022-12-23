@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken')
 const { Request, Response } = require('express')
+const FormattedResponse = require('../views/response')
 
 const protectRoute = (req, res, next) => {
     if (req.isAuthenticated()) {
@@ -16,17 +17,17 @@ const protectRoute = (req, res, next) => {
  * @param {*} next 
  * @returns 
  */
-const authenticateToken = (req, res, next) => {
+const authenticateToken = async (req, res, next) => {
     const authHeader = req.headers.authorization
     const token = authHeader && authHeader.split(' ')[1]
 
     if (!token) {
-        return res.status(401).json({ message: 'No token' })
+        return FormattedResponse.unauthorized(res, 'No token')
     }
 
     jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
         if (err) {
-            return res.status(403).json({ message: 'Unauthorize' })
+            return FormattedResponse.forbidden(res, err.message)
         }
 
         req.user = user
@@ -40,18 +41,17 @@ const authenticateToken = (req, res, next) => {
  * @param {Array.<String>} roles - An array of string contains the role that can pass 
  * @returns a middleware that check user permission to access a certain path
  */
-const checkRole = (roles) => ((req, res, next) => {
+const checkRole = (roles) => (async (req, res, next) => {
     const userRole = req.user.role
-    console.log(userRole)
 
     if (!userRole) {
-        return res.status(400).json({ message: 'Can not find role in request' })
+        return FormattedResponse.badRequest(res, 'Can not find role in request')
     }
 
     if (roles.includes(userRole)) {
         next()
     } else {
-        res.status(403).json({ message: 'Can not access this route' })
+        return FormattedResponse.forbidden(res, 'Can not access this route')
     }
 })
 
