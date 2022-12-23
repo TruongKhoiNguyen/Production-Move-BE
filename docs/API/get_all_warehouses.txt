@@ -1,0 +1,22 @@
+Use case: Người dùng xem danh sách nhà kho mà mình sở hữu, riêng ban điều hành có thể xem danh sách tất cả nhà kho
+
+Điều kiện: Đăng nhập
+
+Get: /api/v1/users/warehouses
+
+Params
+- limit: Giới hạn số kết quả trả về, mặc định 10
+- page: Số trang, mặc định 1
+
+Response: 
+Thành công:
+200
+{
+    "data": []
+}
+
+Lỗi khác:
+500
+{
+    "err": error mesage
+}
