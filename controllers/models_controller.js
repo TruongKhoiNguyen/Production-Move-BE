@@ -11,12 +11,13 @@ const getAll = async (req, res) => {
         limit = parseInt(req.query.limit) || limit
         offset = (parseInt(req.query.page) - 1) * limit || offset
     } catch (err) {
-        return Response.badRequest(res, err)
+        return Response.badRequest(res, err.message)
     }
 
     ProductModel.findAll({ limit: limit, offset: offset })
+        .then(result => result.map((model) => ({ id: model.id, product_line: model.product_line, name: model.name })))
         .then(result => Response.ok(res, { data: result }))
-        .catch(err => Response.internalServerError(res, err))
+        .catch(err => Response.internalServerError(res, err.message))
 }
 
 const create = async (req, res) => {
