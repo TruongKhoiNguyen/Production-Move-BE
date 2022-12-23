@@ -1,0 +1,33 @@
+Post: /api/v1/login
+
+Request:
+{
+    "email": ...
+    "password": ...
+}
+
+Reponse:
+Thành công: 
+200
+{
+    "token": ...
+}
+
+Request thiếu trường:
+400
+{
+    "err": "Fill empty field"
+}
+
+Lỗi đăng nhập:
+400 
+{
+    "err": err message
+}
+
+Người dùng không tồn tại: 
+400
+{
+    "err": "This user does not exist"
+}
+
