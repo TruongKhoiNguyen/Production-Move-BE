@@ -33,13 +33,13 @@ const create = async (req, res) => {
             return Response.badRequest(res, 'This model already exists')
         }
     } catch (err) {
-        return Response.internalServerError(res, err)
+        return Response.internalServerError(res, err.message)
     }
 
 
     ProductModel.create({ product_line: product_line, name: name })
         .then(result => Response.ok(res, { data: result }))
-        .catch(err => Response.internalServerError(res, err))
+        .catch(err => Response.internalServerError(res, err.message))
 }
 
 module.exports = {
