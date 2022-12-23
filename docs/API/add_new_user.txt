@@ -1,0 +1,45 @@
+Use case: Ban điều hành thêm tài khoản mới vào hệ thống
+
+Post: /api/v1/users/
+
+Điều kiện: Có token đăng nhập của ban điều hành 
+
+Request:
+{
+    "email": ...
+    "name": ...
+    "password": ...
+    "confirm": ...
+    "role": ...
+}
+
+Response: 
+Thành công: 
+200
+{
+    "message": "User created"
+}
+
+Request thiếu trường:
+400
+{
+    "err": "Fill empty field"
+}
+
+Đăng ký người dùng là ban điều hành
+400 
+{
+    "err": "This role is can not be registered"
+}
+
+Người dùng đã tồn tại
+400
+{
+    "err": "User already existed"
+}
+
+Lỗi khác
+400
+{
+    "err": error message
+}
