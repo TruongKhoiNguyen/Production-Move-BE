@@ -3,23 +3,24 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class Warehouse extends Model {
+  class Lot extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      Warehouse.belongsTo(models.User, { foreignKey: 'user_id' })
-      Warehouse.hasMany(models.LocationTracker, { foreignKey: 'warehouse_id' })
+      Lot.belongsTo(models.ProductModel, { foreignKey: 'model' })
+
+      Lot.hasMany(models.Product, { foreignKey: 'lot_number' })
+      Lot.hasMany(models.LocationTracker, { foreignKey: 'lot_number' })
     }
   }
-  Warehouse.init({
-    user_id: DataTypes.INTEGER,
-    location: DataTypes.STRING
+  Lot.init({
+    model: DataTypes.INTEGER
   }, {
     sequelize,
-    modelName: 'Warehouse',
+    modelName: 'Lot',
   });
-  return Warehouse;
+  return Lot;
 };
