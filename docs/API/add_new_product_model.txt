@@ -1,0 +1,37 @@
+Use case: Ban điều hành thêm model sản phẩm mới vào hệ thống
+
+Post: /api/v1/products/models/
+
+Điều kiện: Có token ban điều hành
+
+Request: 
+{
+    "product_line": ...
+    "name": ...
+}
+
+Product line chỉ thuộc 1 trong 3 "iphone", "ipad", "macintosh"
+
+Response:
+Thành công:
+200
+{
+    "data": Thông tin model
+}
+
+Request thiếu trường:
+400
+{
+    "err": "Fill empty field"
+}
+
+Model đã tồn tại
+400
+{
+    "err": "This model already exists"
+}
+
+Lỗi khác
+{
+    "err": Error message
+}
