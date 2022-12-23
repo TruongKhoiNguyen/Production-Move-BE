@@ -6,6 +6,10 @@ class ModelsManager {
     static get models() {
         return this.#connection.sequelize.models
     }
+
+    static get connection() {
+        return this.#connection.sequelize
+    }
 }
 
 module.exports = ModelsManager

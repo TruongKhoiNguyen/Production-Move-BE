@@ -1,6 +1,11 @@
 class ControllerUtil {
     static checkEmptyFields(...fields) {
-        return fields.reduce((field1, field2) => !field1 || !field2, false)
+        let result = false
+        for (let field in fields) {
+            result = result || !field
+        }
+
+        return result
     }
 }
 
