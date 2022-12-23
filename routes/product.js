@@ -8,6 +8,6 @@ const router = express.Router()
 router.get('/models', modelsController.getAll)
 router.post('/models', checkRole(['executive']), modelsController.create)
 
-router.post('/', productionController.manufacture)
+router.post('/', checkRole(['production']), productionController.manufacture)
 
 module.exports = router
