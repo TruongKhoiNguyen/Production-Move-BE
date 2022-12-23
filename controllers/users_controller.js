@@ -15,18 +15,14 @@ const User = UsersManager.User
  * @returns 
  */
 const register = async (req, res) => {
-    const { email, name, password, confirm, role } = req.body
+    const { email, name, password, role } = req.body
 
-    if (ControllerUtil.checkEmptyFields(email, name, password, confirm, role)) {
+    if (ControllerUtil.checkEmptyFields(email, name, password, role)) {
         return Response.badRequest(res, 'Fill empty field')
     }
 
     if (role === 'executive') {
         return Response.badRequest(res, 'This role is can not be registered')
-    }
-
-    if (password !== confirm) {
-        return Response.badRequest(res, 'Password must match')
     }
 
     const isDuplicated = await UsersManager.checkDuplicated(email)
@@ -39,13 +35,13 @@ const register = async (req, res) => {
         const hash = await Encryption.hash(password)
 
         User.create({ email: email, name: name, password: hash, role: role }).then((user) => {
-            Response.created(res, { data: user, message: 'User created' })
+            Response.created(res, { message: 'User created' })
         }).catch(err => {
-            Response.internalServerError(res, err)
+            Response.internalServerError(res, err.message)
         })
 
     } catch (err) {
-        Response.internalServerError(res, err)
+        Response.internalServerError(res, err.message)
     }
 
 }
