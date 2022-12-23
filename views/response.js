@@ -15,6 +15,10 @@ class Response {
         return response.status(401).json({ err: err })
     }
 
+    static async forbidden(response, err) {
+        return response.status(403).json({ err: err })
+    }
+
     static async notFound(response, err) {
         return response.status(404).json({ err: err })
     }
