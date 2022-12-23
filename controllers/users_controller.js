@@ -65,18 +65,18 @@ const login = async (req, res) => {
 
     passport.authenticate('local', { session: false }, (err, user, info) => {
         if (err) {
-            return Response.badRequest(res, err)
+            return Response.badRequest(res, err.message)
         }
 
         if (!user) {
             return Response.badRequest(res, 'This user does not exist')
         }
 
-        const body = { id: user.id, email: user.email, name: user.name, role: user.role }
+        const body = { id: user.id, role: user.role }
         const secret = process.env.JWT_SECRET
         const token = jwt.sign(body, secret)
 
-        Response.ok(res, { token: token, user: body, message: 'User authenticated' })
+        Response.ok(res, { token: token })
     })(req, res)
 }
 
