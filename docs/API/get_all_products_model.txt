@@ -1,0 +1,28 @@
+Use case: Người dùng xem danh sách các model hiện có
+
+Điều kiện: Đã đăng nhập
+
+Get: /api/v1/products/models
+
+Params
+- limit: Giới hạn số kết quả trả về, mặc định 10
+- page: Số trang, mặc định 1
+
+Response:
+Thành công:
+200
+{
+    data: [...]
+}
+
+Url Params không hợp lệ
+400
+{
+    err: error message
+}
+
+Lỗi khác:
+500
+{
+    err: error message
+}
