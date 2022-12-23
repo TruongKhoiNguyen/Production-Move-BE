@@ -1,0 +1,30 @@
+Use case: Cơ sở sản xuất sản xuất ra một lô sản phẩm 
+
+Điều kiện: Request có token của cơ sở sản xuất
+
+Post: /api/v1/products
+Request: 
+{
+    "model": integer thể hiện mã model
+    "amount": số lượng sản phẩm sản xuất
+    "warehouse_id": mã nhà kho để chứa sản phẩm sản xuất xong
+}
+
+Response:
+Thành công:
+200
+{
+    "message": "Success"
+}
+
+Request thiếu trường:
+400
+{
+    "err": "Fill empty field"
+}
+
+Lỗi khác:
+500
+{
+    "err": error message
+}
