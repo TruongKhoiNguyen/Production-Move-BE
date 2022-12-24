@@ -15,6 +15,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   LotShipping.init({
+    previous_state: DataTypes.INTEGER,
     shipping_id: DataTypes.INTEGER,
     lot_number: DataTypes.INTEGER
   }, {
