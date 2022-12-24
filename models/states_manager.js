@@ -1,13 +1,14 @@
-const { User } = require('./models_manager').models
+const { Product } = require('./models_manager').models
 
 class StatesManager {
     static async onShipping(component) {
-        await User.update({ status: 0 /*Shipping*/ },
+        await Product.update({ status: 0 /*Shipping*/ },
             {
                 where: {
                     lot_number: component.lotNumber
                 }
-            })
+            }
+        )
     }
 }
 
