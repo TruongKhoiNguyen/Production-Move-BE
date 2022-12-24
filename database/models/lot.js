@@ -14,6 +14,8 @@ module.exports = (sequelize, DataTypes) => {
 
       Lot.hasMany(models.Product, { foreignKey: 'lot_number' })
       Lot.hasMany(models.LocationTracker, { foreignKey: 'lot_number' })
+
+      Lot.hasOne(models.LotShipping, { foreignKey: 'lot_number' })
     }
   }
   Lot.init({
