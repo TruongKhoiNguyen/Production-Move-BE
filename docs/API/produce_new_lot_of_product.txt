@@ -14,7 +14,7 @@ Response:
 Thành công:
 200
 {
-    "message": "Success"
+    "message": "Products manufactured"
 }
 
 Request thiếu trường:
