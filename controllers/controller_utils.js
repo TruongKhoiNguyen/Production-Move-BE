@@ -1,11 +1,16 @@
 class ControllerUtil {
     static checkEmptyFields(...fields) {
         let result = false
+
         for (let field in fields) {
             result = result || !field
         }
 
         return result
+    }
+
+    static checkExistingFields(...fields) {
+        return fields.reduce((a, b) => a && b)
     }
 
     static pagination(req) {

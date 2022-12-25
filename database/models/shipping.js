@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       Shipping.belongsTo(models.User, { foreignKey: 'from' })
       Shipping.belongsTo(models.User, { foreignKey: 'to' })
 
-      Shipping.hasMany(models.LotShipping, { foreignKey: 'shipping_id' })
+      Shipping.hasOne(models.LotShipping, { foreignKey: 'shipping_id' })
     }
   }
   Shipping.init({
