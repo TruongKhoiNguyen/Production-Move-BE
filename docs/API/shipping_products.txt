@@ -23,6 +23,12 @@ Request thiếu trường:
     "err": "Fill empty field"
 }
 
+Người gửi và người nhận không đúng role (hiện tại chỉ cho phép production gửi cho distribution):
+400
+{
+    "err": "These users cannot perform lot shipping"
+}
+
 Lỗi khác:
 500
 {

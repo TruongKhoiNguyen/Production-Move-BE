@@ -9,6 +9,9 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
+      next_state: {
+        type: Sequelize.INTEGER
+      },
       shipping_id: {
         type: Sequelize.INTEGER,
         references: {
