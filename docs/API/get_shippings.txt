@@ -1,0 +1,18 @@
+Use case: Người dùng muốn xem hàng hóa đang vận chuyển đến mình
+
+Điều kiện: Đăng nhập
+
+Get: /api/v1/products/shippings
+
+Response:
+Thành công: 
+200
+{
+    data: []
+}
+
+Lỗi khác:
+500
+{
+    err: error message
+}
