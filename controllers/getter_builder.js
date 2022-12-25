@@ -2,9 +2,10 @@ const ControllerUtil = require('./controller_utils')
 const FormattedResponse = require('../views/response')
 
 class GetterBuilder {
-    #setVar
+    #setVar = (req, vars) => { }
     #model
-    #setCondition
+    #setCondition = (vars) => ({})
+    #resultFormatter = (instance) => instance
 
     static of() {
         return new GetterBuilder()
@@ -21,6 +22,11 @@ class GetterBuilder {
         return this
     }
 
+    setResultFormatter(formatter) {
+        this.#resultFormatter = formatter
+        return this
+    }
+
     build() {
         return (async (req, res) => {
             let vars = {}
@@ -29,7 +35,7 @@ class GetterBuilder {
 
             try {
                 const result = await this.#model.findAll({ where: this.#setCondition(vars), limit: limit, offset: offset })
-                return FormattedResponse.ok(res, { data: result })
+                return FormattedResponse.ok(res, { data: result.map(this.#resultFormatter) })
             } catch (err) {
                 return FormattedResponse.internalServerError(res, err.message)
             }

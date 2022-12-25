@@ -5,6 +5,8 @@ const UsersManager = require('../models/users_manager')
 const Encryption = require('../models/encryption')
 const Response = require('../views/response')
 const ControllerUtil = require('./controller_utils')
+const GetterBuilder = require('./getter_builder')
+const ObjectFormatter = require('../views/object_formatter')
 const User = UsersManager.User
 
 
@@ -83,22 +85,13 @@ const login = async (req, res) => {
  * @param {Request} req 
  * @param {Response} res 
  */
-const getAll = async (req, res) => {
-    let limit = 10
-    let offset = 0
-
-    try {
-        limit = parseInt(req.query.limit) || limit
-        offset = (parseInt(req.query.page) - 1) * limit || offset
-    } catch (err) {
-        return Response.badRequest(res, err)
-    }
-
-    User.findAll({ limit: limit, offset: offset })
-        .then(result => result.map((user) => ({ id: user.id, email: user.email, name: user.name, role: user.role })))
-        .then(users => Response.ok(res, { data: users }))
-        .catch(err => Response.internalServerError(res, err))
-}
+const getAll = GetterBuilder.of()
+    .setCondition(User, (vars) => { })
+    .setResultFormatter((instance) => ObjectFormatter.omitProperty(
+        ['password', 'createdAt', 'updatedAt'],
+        instance.get({ plain: true })
+    ))
+    .build()
 
 module.exports = {
     register,
