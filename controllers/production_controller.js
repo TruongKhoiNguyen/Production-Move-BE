@@ -1,27 +1,23 @@
-const { Lot, Product, LocationTracker } = require("../models/models_manager").models
+const { Lot, Product, LocationTracker, User } = require("../models/models_manager").models
 const sequelize = require('../models/models_manager').connection
+const Manufacture = require("../models/production/manufacture")
 const Response = require("../views/response")
 const ControllerUtil = require("./controller_utils")
 
 const manufacture = async (req, res) => {
     const { model, amount, warehouse_id } = req.body
+    const userId = req.user.id
 
     if (ControllerUtil.checkEmptyFields(model, amount, warehouse_id)) {
         return Response.badRequest(res, 'Fill empty field')
     }
 
     try {
-        await sequelize.transaction(async (t) => {
-            const lot = await Lot.create({ model: model }, { transaction: t })
+        const factory = await User.findByPk(userId)
+        const manufacture = new Manufacture(factory)
+        manufacture.execute(model, amount, warehouse_id)
 
-            await LocationTracker.create({ lot_number: lot.id, warehouse_id: warehouse_id }, { transaction: t })
-
-            for (let i = 0; i < amount; i++) {
-                await Product.create({ lot_number: lot.id, status: 1 }, { transaction: t })
-            }
-        })
-
-        Response.ok(res, { message: 'Success' })
+        return Response.ok(res, { message: 'Products manufactured' })
 
     } catch (err) {
         Response.internalServerError(res, err.message)
