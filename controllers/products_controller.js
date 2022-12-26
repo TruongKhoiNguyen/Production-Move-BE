@@ -5,6 +5,7 @@ const LotShippingHandler = require('./lot_shipping_handler')
 const GetterBuilder = require('./getter_builder')
 const ProductionLogistics = require('../models/logistics/production_logistics')
 const DistributionAgent = require('../models/roles/distribution_agent')
+const WarrantyCenter = require('../models/roles/warranty_center')
 
 const { Shipping, User } = ModelsManager.models
 
@@ -45,10 +46,16 @@ const receiveOrder = async (req, res) => {
         if (user.role === 'distribution') {
             const distributionAgent = new DistributionAgent(user)
             await distributionAgent.receive(delivery_id, storage_id)
-            return FormattedResponse.ok(res, { message: 'Product received' })
+
+        } else if (user.role === 'warranty') {
+            const warrantyCenter = new WarrantyCenter(user)
+            await warrantyCenter.receive(delivery_id, storage_id)
+
         } else {
             return FormattedResponse.badRequest(res, 'This role is not supported')
         }
+
+        return FormattedResponse.ok(res, { message: 'Product received' })
 
     } catch (err) {
         return FormattedResponse.internalServerError(res, err.message)

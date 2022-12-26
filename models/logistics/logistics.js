@@ -1,6 +1,6 @@
 const ModelsManager = require('../models_manager')
 
-const { Logistics: PersistentLogistics, LotLogistics: PersistentLotLogistics, Product } = ModelsManager.models
+const { Logistics: PersistentLogistics, LotLogistics: PersistentLotLogistics, Product, IndividualLogistics } = ModelsManager.models
 
 class Logistics {
     client
@@ -25,6 +25,10 @@ class Logistics {
             const lotNumber = (await PersistentLotLogistics.findOne({ where: { delivery_id: shipping_id } })).lot_number
             const products = await Product.findAll({ where: { lot_number: lotNumber } })
             result = products.map(product => product.id)
+        } else if (order.type === 'individual') {
+            const productId = (await IndividualLogistics.findOne({ where: { delivery_id: shipping_id } })).product_id
+            const product = await Product.findByPk(productId)
+            result.push(product.id)
         }
 
         order.received = true
