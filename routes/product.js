@@ -11,7 +11,7 @@ router.post('/models', checkRole(['executive']), modelsController.create)
 
 router.post('/', checkRole(['production']), productionController.manufacture)
 
-router.post('/shipping', checkRole(['production']), productsController.send)
+router.post('/shippings', checkRole(['production']), productsController.send)
 router.get('/shippings', checkRole(['distribution']), productsController.getShippings)
 
 module.exports = router

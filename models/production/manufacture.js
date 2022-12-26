@@ -40,7 +40,7 @@ class Manufacture {
         const owner = await storage.getUser()
 
         if (owner.id !== this.#productionFactory.id) {
-            throw Error('Warehouse does not belong to this user')
+            throw new Error('Warehouse does not belong to this user')
         }
 
         const warehouse = new Warehouse(storage)
