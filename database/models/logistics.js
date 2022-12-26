@@ -14,6 +14,7 @@ module.exports = (sequelize, DataTypes) => {
       Logistics.belongsTo(models.User, { foreignKey: 'to' })
 
       Logistics.hasOne(models.LotLogistics, { foreignKey: 'delivery_id' })
+      Logistics.hasOne(models.IndividualLogistics, { foreignKey: 'delivery_id' })
     }
   }
   Logistics.init({

@@ -13,6 +13,11 @@ module.exports = {
       location: 'Marunouchi, Chiyoda-ku, Tokyo, Japan',
       createdAt: new Date(),
       updatedAt: new Date(),
+    }, {
+      user_id: 4,
+      location: 'Nishi-Shinsaibashi, Chuo-ku, Osaku-fu, Japan',
+      createdAt: new Date(),
+      updatedAt: new Date(),
     }]);
   },
 

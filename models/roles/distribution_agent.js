@@ -2,7 +2,7 @@ const ModelsManager = require('../models_manager')
 const Logistics = require('../logistics/logistics')
 const Inventory = require('../storage/inventory')
 
-const { Storage, Product, Logistics: PersistentLogistics, User, Sale } = ModelsManager.models
+const { Storage, Product, Logistics: PersistentLogistics, User, Sale, IndividualLogistics } = ModelsManager.models
 
 const sequelize = ModelsManager.connection
 
@@ -103,6 +103,55 @@ class DistributionAgent {
             product.status = 4 /* Repair in waiting */
             await product.save()
 
+        } catch (err) {
+            throw err
+        }
+    }
+
+    async sendForRepair(product_id, warranty_center) {
+        const storages = await Storage.findAll({ where: { user_id: this.distributionAgent.id } })
+
+        let product
+        for (let i = 0; i < storages.length; i++) {
+            const inventory = new Inventory(storages[i])
+            const tempProduct = await inventory.retrieve(product_id)
+
+            if (tempProduct) {
+                product = tempProduct
+                break
+            }
+        }
+
+        if (!product) {
+            throw new Error('This product is not in inventory')
+        }
+
+        if (product.status !== 4 /* Repair in waiting */) {
+            throw new Error('This product is not for repair')
+        }
+
+        const receiver = await User.findByPk(warranty_center)
+
+        if (receiver.role !== 'warranty') {
+            throw new Error('Receiver is not a warranty center')
+        }
+
+        try {
+            const result = await sequelize.transaction(async (t) => {
+                const logistics = await PersistentLogistics.create(
+                    { from: this.distributionAgent.id, to: warranty_center, type: 'individual' },
+                    { transaction: t }
+                )
+
+                await IndividualLogistics.create({ delivery_id: logistics.id, product_id: product.id }, { transaction: t })
+
+                product.status = 0 /* Shipping */
+                product.save()
+
+                return logistics.id
+            })
+
+            return result
         } catch (err) {
             throw err
         }
