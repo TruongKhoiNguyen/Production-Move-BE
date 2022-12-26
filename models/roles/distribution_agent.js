@@ -82,6 +82,31 @@ class DistributionAgent {
             throw err
         }
     }
+
+    async receiveForRepairing(product_id, storage_id) {
+        const product = await Product.findByPk(product_id)
+
+        if (product.status !== 3 /* Sold */) {
+            throw new Error('This product is not in state of repairing')
+        }
+
+        const storage = await Storage.findByPk(storage_id)
+
+        if (storage.user_id !== this.distributionAgent.id) {
+            throw new Error('This storage does not belong to this user')
+        }
+
+        try {
+            const inventory = new Inventory(storage)
+            await inventory.store(product_id)
+
+            product.status = 4 /* Repair in waiting */
+            await product.save()
+
+        } catch (err) {
+            throw err
+        }
+    }
 }
 
 module.exports = DistributionAgent

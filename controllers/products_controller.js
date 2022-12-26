@@ -75,6 +75,25 @@ const sell = async (req, res) => {
     }
 }
 
+const receiveForRepairing = async (req, res) => {
+    const { product_id, storage_id } = req.body
+
+    if (ControllerUtil.checkEmptyFields(product_id, storage_id)) {
+        return FormattedResponse.badRequest(res, 'Fill empty field')
+    }
+
+    const userId = req.user.id
+    const user = await User.findByPk(userId)
+
+    try {
+        const distributionAgent = new DistributionAgent(user)
+        await distributionAgent.receiveForRepairing(product_id, storage_id)
+        return FormattedResponse.ok(res, { data: 'Product is in queue' })
+    } catch (err) {
+        return FormattedResponse.internalServerError(res, err.message)
+    }
+}
+
 const getShippings = GetterBuilder
     .of()
     .setVariables((req, vars) => {
@@ -87,5 +106,6 @@ module.exports = {
     send,
     getShippings,
     receiveOrder,
-    sell
+    sell,
+    receiveForRepairing
 }
