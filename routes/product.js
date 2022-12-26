@@ -16,4 +16,6 @@ router.get('/shippings', checkRole(['distribution']), productsController.getShip
 
 router.post('/shippings/:delivery_id', productsController.receiveOrder)
 
+router.post('/sales', checkRole(['distribution']), productsController.sell)
+
 module.exports = router

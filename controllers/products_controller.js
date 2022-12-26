@@ -55,6 +55,26 @@ const receiveOrder = async (req, res) => {
     }
 }
 
+const sell = async (req, res) => {
+    const userId = req.user.id
+
+    const { product_id, customer_id } = req.body
+
+    if (ControllerUtil.checkEmptyFields(product_id, customer_id)) {
+        return FormattedResponse.badRequest(res, 'Fill empty field')
+    }
+
+    const user = await User.findByPk(userId)
+
+    try {
+        const distributionAgent = new DistributionAgent(user)
+        const result = await distributionAgent.sell(product_id, customer_id)
+        return FormattedResponse.ok(res, { data: result })
+    } catch (err) {
+        return FormattedResponse.internalServerError(res, err.message)
+    }
+}
+
 const getShippings = GetterBuilder
     .of()
     .setVariables((req, vars) => {
@@ -66,5 +86,6 @@ const getShippings = GetterBuilder
 module.exports = {
     send,
     getShippings,
-    receiveOrder
+    receiveOrder,
+    sell
 }
