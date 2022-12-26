@@ -23,7 +23,7 @@ class Inventory {
 
         const product = await Product.findByPk(record.products_id)
 
-        if (product.status !== 2) {
+        if (product.status !== 2 && product.status !== 4) {
             return null
         }
 
