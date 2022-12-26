@@ -4,6 +4,7 @@ const ControllerUtil = require('./controller_utils')
 const LotShippingHandler = require('./lot_shipping_handler')
 const GetterBuilder = require('./getter_builder')
 const ProductionLogistics = require('../models/logistics/production_logistics')
+const DistributionAgent = require('../models/roles/distribution_agent')
 
 const { Shipping, User } = ModelsManager.models
 
@@ -29,6 +30,31 @@ const send = async (req, res) => {
 
 }
 
+const receiveOrder = async (req, res) => {
+    const userId = req.user.id
+    const { storage_id } = req.body
+    const { delivery_id } = req.params
+
+    if (ControllerUtil.checkEmptyFields(userId, storage_id, delivery_id)) {
+        return FormattedResponse.badRequest(res, 'Fill empty field')
+    }
+
+    const user = await User.findByPk(userId)
+
+    try {
+        if (user.role === 'distribution') {
+            const distributionAgent = new DistributionAgent(user)
+            await distributionAgent.receive(delivery_id, storage_id)
+            return FormattedResponse.ok(res, { message: 'Product received' })
+        } else {
+            return FormattedResponse.badRequest(res, 'This role is not supported')
+        }
+
+    } catch (err) {
+        return FormattedResponse.internalServerError(res, err.message)
+    }
+}
+
 const getShippings = GetterBuilder
     .of()
     .setVariables((req, vars) => {
@@ -40,4 +66,5 @@ const getShippings = GetterBuilder
 module.exports = {
     send,
     getShippings,
+    receiveOrder
 }
