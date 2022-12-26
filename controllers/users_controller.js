@@ -74,7 +74,7 @@ const login = async (req, res) => {
         const secret = process.env.JWT_SECRET
         const token = jwt.sign(body, secret)
 
-        Response.ok(res, { token: token, user: { id: user.id, email: user.email, name: user.name } })
+        Response.ok(res, { token: token, user: { id: user.id, email: user.email, name: user.name, role: user.role } })
     })(req, res)
 }
 
