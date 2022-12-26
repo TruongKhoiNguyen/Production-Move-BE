@@ -3,23 +3,30 @@ const FormattedResponse = require('../views/response')
 const ControllerUtil = require('./controller_utils')
 const LotShippingHandler = require('./lot_shipping_handler')
 const GetterBuilder = require('./getter_builder')
+const ProductionLogistics = require('../models/logistics/production_logistics')
 
-const { Shipping } = ModelsManager.models
+const { Shipping, User } = ModelsManager.models
 
 const send = async (req, res) => {
     const from = req.user.id
+
     const { to, lot_number } = req.body
 
-    if (ControllerUtil.checkExistingFields(from, to, lot_number)) {
-        const handler = new LotShippingHandler(req, res)
-        return await handler
-            .setFrom(from)
-            .setTo(to)
-            .setLotNumber(lot_number)
-            .send()
+    const user = await User.findByPk(from)
+
+    if (user.role !== 'production') {
+        FormattedResponse.badRequest(res, 'Can not send')
     }
 
-    return FormattedResponse.badRequest(res, 'Fill empty field')
+    const logistics = new ProductionLogistics(user)
+    try {
+        const id = await logistics.send(lot_number, to)
+
+        return FormattedResponse.ok(res, { data: id })
+    } catch (err) {
+        return FormattedResponse.internalServerError(res, err.message)
+    }
+
 }
 
 const getShippings = GetterBuilder
@@ -32,5 +39,5 @@ const getShippings = GetterBuilder
 
 module.exports = {
     send,
-    getShippings
+    getShippings,
 }
