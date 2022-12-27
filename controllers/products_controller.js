@@ -7,7 +7,7 @@ const ProductionLogistics = require('../models/logistics/production_logistics')
 const DistributionAgent = require('../models/roles/distribution_agent')
 const WarrantyCenter = require('../models/roles/warranty_center')
 
-const { Shipping, User } = ModelsManager.models
+const { Shipping, User, Product } = ModelsManager.models
 
 const send = async (req, res) => {
     const from = req.user.id
@@ -72,11 +72,21 @@ const sell = async (req, res) => {
     }
 
     const user = await User.findByPk(userId)
+    const product = await Product.findByPk(product_id)
 
     try {
         const distributionAgent = new DistributionAgent(user)
-        const result = await distributionAgent.sell(product_id, customer_id)
-        return FormattedResponse.ok(res, { data: result })
+        let result
+        let message
+        if (product.status === 2) {
+            result = await distributionAgent.sell(product_id, customer_id)
+            message = 'Sold'
+        } else if (product.status === 6) {
+            result = await distributionAgent.returnToCustomer(product_id, customer_id)
+            message = 'Returned'
+        }
+
+        return FormattedResponse.ok(res, { data: result, message: message })
     } catch (err) {
         return FormattedResponse.internalServerError(res, err.message)
     }
