@@ -9,24 +9,24 @@ const { Storage, Product, Logistics: PersistentLogistics, User, Sale, Individual
 const sequelize = ModelsManager.connection
 
 class DistributionAgent {
-    distributionAgent
+    user
 
     constructor(user) {
         if (user.role !== 'distribution') {
             throw new Error('This user is not a distribution agent')
         }
 
-        this.distributionAgent = user
+        this.user = user
     }
 
     async receive(delivery_id, storage_id) {
         const storage = await Storage.findByPk(storage_id)
 
-        if (storage.user_id !== this.distributionAgent.id) {
+        if (storage.user_id !== this.user.id) {
             throw new Error('This storage does not belong to this user')
         }
 
-        const logistics = new Logistics(this.distributionAgent)
+        const logistics = new Logistics(this.user)
         const products = await logistics.get(delivery_id)
 
         const inventory = new Inventory(storage)
@@ -54,7 +54,7 @@ class DistributionAgent {
     }
 
     async sell(product_id, customer_id) {
-        const storages = await Storage.findAll({ where: { user_id: this.distributionAgent.id } })
+        const storages = await Storage.findAll({ where: { user_id: this.user.id } })
 
         let product
         for (let i = 0; i < storages.length; i++) {
@@ -100,7 +100,7 @@ class DistributionAgent {
 
         const storage = await Storage.findByPk(storage_id)
 
-        if (storage.user_id !== this.distributionAgent.id) {
+        if (storage.user_id !== this.user.id) {
             throw new Error('This storage does not belong to this user')
         }
 
@@ -125,8 +125,8 @@ class DistributionAgent {
         }
     }
 
-    async sendForRepair(product_id, warranty_center) {
-        const storages = await Storage.findAll({ where: { user_id: this.distributionAgent.id } })
+    async send(product_id, to) {
+        const storages = await Storage.findAll({ where: { user_id: this.user.id } })
 
         let product
         for (let i = 0; i < storages.length; i++) {
@@ -147,7 +147,7 @@ class DistributionAgent {
             throw new Error('This product is not for repair')
         }
 
-        const receiver = await User.findByPk(warranty_center)
+        const receiver = await User.findByPk(to)
 
         if (receiver.role !== 'warranty') {
             throw new Error('Receiver is not a warranty center')
@@ -156,7 +156,7 @@ class DistributionAgent {
         try {
             const result = await sequelize.transaction(async (t) => {
                 const logistics = await PersistentLogistics.create(
-                    { from: this.distributionAgent.id, to: warranty_center, type: 'individual' },
+                    { from: this.user.id, to: to, type: 'individual' },
                     { transaction: t }
                 )
 
@@ -175,7 +175,7 @@ class DistributionAgent {
     }
 
     async returnToCustomer(product_id, customer_id) {
-        const storages = await Storage.findAll({ where: { user_id: this.distributionAgent.id } })
+        const storages = await Storage.findAll({ where: { user_id: this.user.id } })
 
         let product
         for (let i = 0; i < storages.length; i++) {
@@ -212,7 +212,7 @@ class DistributionAgent {
 
     async recall(lot_number) {
         const product = await Product.findOne({ where: { lot_number: lot_number } })
-        const storages = await Storage.findAll({ where: { user_id: this.distributionAgent.id } })
+        const storages = await Storage.findAll({ where: { user_id: this.user.id } })
 
         let isRecordExist = false
         for (let i = 0; i < storages.length; i++) {
@@ -252,7 +252,7 @@ class DistributionAgent {
             throw new Error('This is not a factory')
         }
 
-        const storages = await Storage.findAll({ where: { user_id: this.distributionAgent.id } })
+        const storages = await Storage.findAll({ where: { user_id: this.user.id } })
         const storageId = storages.map(storage => storage.id)
         const records = await InventoryRecord.findAll({ where: { storage_id: { [Op.in]: storageId } } })
         const productId = records.map(record => record.products_id)
@@ -260,7 +260,7 @@ class DistributionAgent {
 
         try {
             await sequelize.transaction(async (t) => {
-                const logistics = await PersistentLogistics.bulkCreate(Array(recalledProducts.length).fill({ from: this.distributionAgent.id, to: factory_id, type: 'individual' }), { transaction: t })
+                const logistics = await PersistentLogistics.bulkCreate(Array(recalledProducts.length).fill({ from: this.user.id, to: factory_id, type: 'individual' }), { transaction: t })
                 await IndividualLogistics.bulkCreate(logistics.map((el, i) => ({ delivery_id: el.id, product_id: recalledProducts[i].id })), { transaction: t })
                 await Product.update({ status: 0 }, { where: { id: { [Op.in]: recalledProducts.map(el => el.id) } }, transaction: t })
             })
