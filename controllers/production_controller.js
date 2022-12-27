@@ -1,6 +1,4 @@
-const { Lot, Product, LocationTracker, User } = require("../models/models_manager").models
-const sequelize = require('../models/models_manager').connection
-const Manufacture = require("../models/production/manufacture")
+const { User } = require("../models/models_manager").models
 const ProductionFactory = require("../models/roles/production_factory")
 const Response = require("../views/response")
 const ControllerUtil = require("./controller_utils")
