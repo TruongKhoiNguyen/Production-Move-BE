@@ -25,6 +25,26 @@ const send = async (req, res) => {
     }
 }
 
+const returnToFactory = async (req, res) => {
+    const { product_id } = req.body
+
+    if (!product_id) {
+        return FormattedResponse.badRequest(res, 'Fill emtpty field')
+    }
+
+    const user = await User.findByPk(req.user.id)
+
+    try {
+        const warrantyCenter = new WarrantyCenter(user)
+        await warrantyCenter.returnToFactory(product_id)
+        return FormattedResponse.ok(res, { message: 'Product returned' })
+
+    } catch (err) {
+        return FormattedResponse.internalServerError(res, err.message)
+    }
+}
+
 module.exports = {
-    send
+    send,
+    returnToFactory
 }

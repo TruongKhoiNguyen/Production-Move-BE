@@ -85,6 +85,31 @@ class WarrantyCenter {
             throw err
         }
     }
+
+    async returnToFactory(product_id) {
+        const storages = await Storage.findAll({ where: { user_id: this.user.id } })
+
+        let product
+        for (let i = 0; i < storages.length; i++) {
+            const inventory = new Inventory(storages[i])
+            const tempProduct = await inventory.retrieve(product_id)
+
+            if (tempProduct) {
+                product = tempProduct
+                break
+            }
+        }
+
+        if (!product) {
+            throw new Error('This product is not in inventory')
+        }
+
+        if (product.status !== 5 /* Repairing */) {
+            throw new Error('This product is not repaired')
+        }
+
+        await Product.update({ status: 7/* Recalling */ }, { where: { id: product_id } })
+    }
 }
 
 module.exports = WarrantyCenter
