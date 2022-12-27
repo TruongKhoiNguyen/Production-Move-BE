@@ -1,9 +1,10 @@
 const ModelsManager = require('../models_manager')
 const Logistics = require('../logistics/logistics')
 const Inventory = require('../storage/inventory')
+const Warehouse = require('../storage/warehouse')
 const { Op } = require('sequelize')
 
-const { Storage, Product } = ModelsManager.models
+const { Storage, Product, Logistics: PersistentLogistics, LotLogistics, User } = ModelsManager.models
 const sequelize = ModelsManager.connection
 
 class ProductionFactory {
@@ -36,6 +37,48 @@ class ProductionFactory {
             await sequelize.transaction(async (t) => {
                 await Product.update({ status: 9 /* Returned */ }, { where: { id: { [Op.in]: products } }, transaction: t })
             })
+
+        } catch (err) {
+            throw err
+        }
+    }
+
+    async send(lot_number, to) {
+        const storages = await Storage.findAll({ where: { user_id: this.user.id } })
+
+        let lot
+        for (let i = 0; i < storages.length; i++) {
+            const warehouse = new Warehouse(storages[i])
+            const tempLot = await warehouse.retrieve(lot_number)
+
+            if (tempLot) {
+                lot = tempLot
+                break
+            }
+        }
+
+        if (!lot) {
+            throw new Error('This lot is not in warehouse')
+        }
+
+        const receiver = await User.findByPk(to)
+
+        if (receiver.role !== 'distribution') {
+            throw new Error('Receiver is not a distribution agent')
+        }
+
+        try {
+            const result = await sequelize.transaction(async (t) => {
+                const logistics = await PersistentLogistics.create({ from: this.user.id, to: to, type: 'lot' }, { transaction: t })
+                await LotLogistics.create({ delivery_id: logistics.id, lot_number: lot_number }, { transaction: t })
+
+                await Product.update({ status: 0 /* Shipping */ }, { where: { lot_number: lot_number }, transaction: t })
+
+                return logistics.id
+            })
+
+            return result
+
 
         } catch (err) {
             throw err

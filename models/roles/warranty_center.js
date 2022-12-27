@@ -6,24 +6,24 @@ const { Storage, Product, User, Logistics: PersistentLogistics, IndividualLogist
 const sequelize = ModelsManager.connection
 
 class WarrantyCenter {
-    warrantyCenter
+    user
 
     constructor(user) {
         if (user.role !== 'warranty') {
             throw new Error('This user is not warranty center')
         }
 
-        this.warrantyCenter = user
+        this.user = user
     }
 
     async receive(delivery_id, storage_id) {
         const storage = await Storage.findByPk(storage_id)
 
-        if (storage.user_id !== this.warrantyCenter.id) {
+        if (storage.user_id !== this.user.id) {
             throw new Error('This storage does not belong to this user')
         }
 
-        const logistics = new Logistics(this.warrantyCenter)
+        const logistics = new Logistics(this.user)
 
         try {
             const products = await logistics.get(delivery_id)
@@ -41,8 +41,8 @@ class WarrantyCenter {
         }
     }
 
-    async send(product_id, distribution_id) {
-        const storages = await Storage.findAll({ where: { user_id: this.warrantyCenter.id } })
+    async send(product_id, to) {
+        const storages = await Storage.findAll({ where: { user_id: this.user.id } })
 
         let product
         for (let i = 0; i < storages.length; i++) {
@@ -63,7 +63,7 @@ class WarrantyCenter {
             throw new Error('This product is not repaired')
         }
 
-        const receiver = await User.findByPk(distribution_id)
+        const receiver = await User.findByPk(to)
 
         if (receiver.role !== 'distribution') {
             throw new Error('Receiver is not a distribution agent')
@@ -71,7 +71,7 @@ class WarrantyCenter {
 
         try {
             const result = await sequelize.transaction(async (t) => {
-                const logistics = await PersistentLogistics.create({ from: this.warrantyCenter.id, to: distribution_id, type: 'individual' }, { transaction: t })
+                const logistics = await PersistentLogistics.create({ from: this.user.id, to: to, type: 'individual' }, { transaction: t })
                 await IndividualLogistics.create({ delivery_id: logistics.id, product_id: product_id }, { transaction: t })
 
                 await Product.update({ status: 0 /* Shipping */ }, { where: { id: product_id }, transaction: t })

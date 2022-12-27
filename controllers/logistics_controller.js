@@ -38,6 +38,41 @@ const receive = async (req, res) => {
     }
 }
 
+const send = async (req, res) => {
+    const { to, lot_number, product_id } = req.body
+
+    try {
+        const user = await User.findByPk(req.user.id)
+
+        let sender, id
+        if (user.role === 'production') {
+            sender = new ProductionFactory(user)
+            id = lot_number
+        } else if (user.role === 'distribution') {
+            sender = new DistributionAgent(user)
+            id = product_id
+        } else if (user.role === 'warranty') {
+            sender = new WarrantyCenter(user)
+            id = product_id
+        } else {
+            return FormattedResponse.badRequest(res, 'This role is not supported')
+        }
+
+        if (ControllerUtil.checkEmptyFields(id, to)) {
+            return FormattedResponse.badRequest(res, 'Fill empty field')
+        }
+
+        const result = await sender.send(id, to)
+
+        return FormattedResponse.ok(res, { data: result, message: 'Product sent' })
+
+    } catch (err) {
+        return FormattedResponse.internalServerError(res, err.message)
+    }
+
+}
+
 module.exports = {
-    receive
+    receive,
+    send
 }
