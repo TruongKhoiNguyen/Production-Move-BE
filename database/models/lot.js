@@ -13,9 +13,6 @@ module.exports = (sequelize, DataTypes) => {
       Lot.belongsTo(models.ProductModel, { foreignKey: 'model' })
 
       Lot.hasMany(models.Product, { foreignKey: 'lot_number' })
-      Lot.hasMany(models.LocationTracker, { foreignKey: 'lot_number' })
-
-      Lot.hasOne(models.LotShipping, { foreignKey: 'lot_number' })
 
       Lot.belongsToMany(models.Storage, { through: models.WarehouseRecord, foreignKey: 'lot_number', otherKey: 'storage_id' })
 
