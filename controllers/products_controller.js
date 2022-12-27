@@ -104,7 +104,7 @@ const receiveForRepairing = async (req, res) => {
 
     try {
         const distributionAgent = new DistributionAgent(user)
-        const result = await distributionAgent.receiveForRepairing(product_id, storage_id)
+        const result = await distributionAgent.receiveProduct(product_id, storage_id)
         return FormattedResponse.ok(res, { message: result })
     } catch (err) {
         return FormattedResponse.internalServerError(res, err.message)

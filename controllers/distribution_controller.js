@@ -81,9 +81,29 @@ const returnToCustomer = async (req, res) => {
     }
 }
 
+const receiveProduct = async (req, res) => {
+    const { product_id, storage_id } = req.body
+
+    if (ControllerUtil.checkEmptyFields(product_id, storage_id)) {
+        return FormattedResponse.badRequest(res, 'Fill empty field')
+    }
+
+    const userId = req.user.id
+    const user = await User.findByPk(userId)
+
+    try {
+        const distributionAgent = new DistributionAgent(user)
+        const result = await distributionAgent.receiveProduct(product_id, storage_id)
+        return FormattedResponse.ok(res, { message: 'Product received' })
+    } catch (err) {
+        return FormattedResponse.internalServerError(res, err.message)
+    }
+}
+
 module.exports = {
     sendForRepair,
     returnToFactory,
     sell,
-    returnToCustomer
+    returnToCustomer,
+    receiveProduct
 }
