@@ -11,15 +11,4 @@ router.post('/models', checkRole(['executive']), modelsController.create)
 
 router.post('/', checkRole(['production']), productionController.manufacture)
 
-router.post('/shippings', checkRole(['production']), productsController.send)
-router.get('/shippings', checkRole(['distribution']), productsController.getShippings)
-
-router.post('/shippings/:delivery_id', productsController.receiveOrder)
-
-router.post('/sales', checkRole(['distribution']), productsController.sell)
-
-router.post('/repairing', checkRole(['distribution']), productsController.receiveForRepairing)
-router.post('/recall', checkRole(['distribution']), productsController.recall)
-router.post('/return', checkRole(['production']), productionController.receiveReturn)
-
 module.exports = router
