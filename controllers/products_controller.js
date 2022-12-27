@@ -104,8 +104,8 @@ const receiveForRepairing = async (req, res) => {
 
     try {
         const distributionAgent = new DistributionAgent(user)
-        await distributionAgent.receiveForRepairing(product_id, storage_id)
-        return FormattedResponse.ok(res, { data: 'Product is in queue' })
+        const result = await distributionAgent.receiveForRepairing(product_id, storage_id)
+        return FormattedResponse.ok(res, { message: result })
     } catch (err) {
         return FormattedResponse.internalServerError(res, err.message)
     }

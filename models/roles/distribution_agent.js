@@ -94,7 +94,7 @@ class DistributionAgent {
     async receiveForRepairing(product_id, storage_id) {
         const product = await Product.findByPk(product_id)
 
-        if (product.status !== 3 /* Sold */) {
+        if (product.status !== 3 /* Sold */ && product.status !== 7 /* Recalling */) {
             throw new Error('This product is not in state of repairing')
         }
 
@@ -108,8 +108,17 @@ class DistributionAgent {
             const inventory = new Inventory(storage)
             await inventory.store(product_id)
 
-            product.status = 4 /* Repair in waiting */
+            let result = ''
+            if (product.status === 3) {
+                product.status = 4 /* Repair in waiting */
+                result = 'repair'
+            } else if (product.status === 7) {
+                product.status = 8 /* Recalled */
+                result = 'recalled'
+            }
+
             await product.save()
+            return result
 
         } catch (err) {
             throw err
