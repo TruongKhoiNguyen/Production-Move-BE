@@ -123,7 +123,7 @@ const recall = async (req, res) => {
     try {
         const distributionAgent = new DistributionAgent(user)
         await distributionAgent.recall(lot_number)
-        return FormattedResponse.ok(res, { message: 'Recalled' })
+        return FormattedResponse.ok(res, { message: 'Recalling' })
     } catch (err) {
         return FormattedResponse.internalServerError(res, err.message)
     }

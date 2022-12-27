@@ -100,10 +100,29 @@ const receiveProduct = async (req, res) => {
     }
 }
 
+const recall = async (req, res) => {
+    const { lot_number } = req.body
+
+    if (!lot_number) {
+        return FormattedResponse.badRequest(res, 'Fill empty field')
+    }
+
+    const user = await User.findByPk(req.user.id)
+
+    try {
+        const distributionAgent = new DistributionAgent(user)
+        await distributionAgent.recall(lot_number)
+        return FormattedResponse.ok(res, { message: 'Recalling' })
+    } catch (err) {
+        return FormattedResponse.internalServerError(res, err.message)
+    }
+}
+
 module.exports = {
     sendForRepair,
     returnToFactory,
     sell,
     returnToCustomer,
-    receiveProduct
+    receiveProduct,
+    recall
 }
