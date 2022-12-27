@@ -4,8 +4,9 @@ const DistributionAgent = require('../models/roles/distribution_agent')
 const WarrantyCenter = require('../models/roles/warranty_center')
 const ControllerUtil = require('./controller_utils')
 const FormattedResponse = require('../views/response')
+const GetterBuilder = require('./getter_builder')
 
-const { User } = ModelsManager.models
+const { User, Logistics } = ModelsManager.models
 
 const receive = async (req, res) => {
     const { storage_id } = req.body
@@ -72,7 +73,13 @@ const send = async (req, res) => {
 
 }
 
+const getAll = GetterBuilder.of()
+    .setVariables((req, vars) => vars.userId = req.user.id)
+    .setCondition(Logistics, (vars) => ({ to: vars.userId }))
+    .build()
+
 module.exports = {
     receive,
-    send
+    send,
+    getAll
 }
