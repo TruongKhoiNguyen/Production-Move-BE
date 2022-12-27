@@ -1,8 +1,10 @@
+const { Op } = require('sequelize')
+
 const ModelsManager = require('../models_manager')
 const Logistics = require('../logistics/logistics')
 const Inventory = require('../storage/inventory')
 
-const { Storage, Product, Logistics: PersistentLogistics, User, Sale, IndividualLogistics } = ModelsManager.models
+const { Storage, Product, Logistics: PersistentLogistics, User, Sale, IndividualLogistics, InventoryRecord } = ModelsManager.models
 
 const sequelize = ModelsManager.connection
 
@@ -194,6 +196,41 @@ class DistributionAgent {
             })
 
             return result
+        } catch (err) {
+            throw err
+        }
+    }
+
+    async recall(lot_number) {
+        const product = await Product.findOne({ where: { lot_number: lot_number } })
+        const storages = await Storage.findAll({ where: { user_id: this.distributionAgent.id } })
+
+        let isRecordExist = false
+        for (let i = 0; i < storages.length; i++) {
+            const record = await InventoryRecord.findOne({ where: { storage_id: storages[i].id, products_id: product.id } })
+            if (record) {
+                isRecordExist = true
+                break
+            }
+        }
+
+        if (!isRecordExist) {
+            throw new Error('This distribution agent does not sell this lot')
+        }
+
+        try {
+            await sequelize.transaction(async (t) => {
+                const products = await Product.findAll({ where: { lot_number: lot_number } })
+
+                const productsInInventory = products.filter(product => product.status === 2 || product.status === 4 || product.status === 6)
+                const recalledProductId = productsInInventory.map(product => product.id)
+
+                const recallingProductId = products.map(product => product.id).filter(id => !recalledProductId.includes(id))
+
+                await Product.update({ status: 7 /* Recalling */ }, { where: { id: { [Op.in]: recallingProductId } }, transaction: t })
+                await Product.update({ status: 8 /* Recalled */ }, { where: { id: { [Op.in]: recalledProductId } }, transaction: t })
+            })
+
         } catch (err) {
             throw err
         }
