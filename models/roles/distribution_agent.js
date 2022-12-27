@@ -174,7 +174,7 @@ class DistributionAgent {
         }
     }
 
-    async returnToCustomer(product_id, customer_id) {
+    async returnToCustomer(product_id) {
         const storages = await Storage.findAll({ where: { user_id: this.user.id } })
 
         let product

@@ -3,7 +3,7 @@ const FormattedResponse = require('../views/response')
 const ModelsManager = require('../models/models_manager')
 const DistributionAgent = require('../models/roles/distribution_agent')
 
-const { User } = ModelsManager.models
+const { User, Product } = ModelsManager.models
 
 const sendForRepair = async (req, res) => {
     const { product_id, to } = req.body
@@ -43,7 +43,47 @@ const returnToFactory = async (req, res) => {
     }
 }
 
+const sell = async (req, res) => {
+    const { product_id, customer_id } = req.body
+
+    if (ControllerUtil.checkEmptyFields(product_id, customer_id)) {
+        return FormattedResponse.badRequest(res, 'Fill empty field')
+    }
+
+    const user = await User.findByPk(req.user.id)
+
+    try {
+        const distributionAgent = new DistributionAgent(user)
+        const result = await distributionAgent.sell(product_id, customer_id)
+
+        return FormattedResponse.ok(res, { data: result, message: 'Product sold' })
+    } catch (err) {
+        return FormattedResponse.internalServerError(res, err.message)
+    }
+}
+
+const returnToCustomer = async (req, res) => {
+    const { product_id, customer_id } = req.body
+
+    if (ControllerUtil.checkEmptyFields(product_id, customer_id)) {
+        return FormattedResponse.badRequest(res, 'Fill empty field')
+    }
+
+    const user = await User.findByPk(req.user.id)
+
+    try {
+        const distributionAgent = new DistributionAgent(user)
+        const result = await distributionAgent.returnToCustomer(product_id)
+
+        return FormattedResponse.ok(res, { data: result, message: 'Product returned' })
+    } catch (err) {
+        return FormattedResponse.internalServerError(res, err.message)
+    }
+}
+
 module.exports = {
     sendForRepair,
-    returnToFactory
+    returnToFactory,
+    sell,
+    returnToCustomer
 }

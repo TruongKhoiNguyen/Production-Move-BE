@@ -6,5 +6,7 @@ const router = express.Router()
 
 router.post('/repair', checkRole(['distribution']), distributionController.sendForRepair)
 router.post('/return', checkRole(['distribution']), distributionController.returnToFactory)
+router.post('/sales', checkRole(['distribution']), distributionController.sell)
+router.post('/return-customer', checkRole(['distribution']), distributionController.returnToCustomer)
 
 module.exports = router
