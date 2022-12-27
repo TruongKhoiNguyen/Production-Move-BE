@@ -1,3 +1,5 @@
+const { QueryTypes } = require('sequelize')
+
 const Logistics = require('../logistics/logistics')
 const ModelsManager = require('../models_manager')
 const Inventory = require('../storage/inventory')
@@ -109,6 +111,17 @@ class WarrantyCenter {
         }
 
         await Product.update({ status: 7/* Recalling */ }, { where: { id: product_id } })
+    }
+
+    async getProduct() {
+        const query = 'SELECT * FROM Products WHERE id in (SELECT products_id FROM InventoryRecords WHERE storage_id in (SELECT id FROM Storages WHERE user_id = :user_id)) AND status in (5, 7)';
+
+        const result = await sequelize.query(query, {
+            replacements: { user_id: this.user.id },
+            type: QueryTypes.SELECT
+        })
+
+        return result
     }
 }
 
