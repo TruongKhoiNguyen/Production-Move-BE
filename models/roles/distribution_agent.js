@@ -42,6 +42,12 @@ class DistributionAgent {
                 product.status = 2
                 product.save()
             }
+        } else if (sender.role === 'warranty') {
+            for (let i = 0; i < products.length; i++) {
+                const product = await Product.findByPk(products[i])
+                product.status = 6 /* Repaired */
+                product.save()
+            }
         }
     }
 
