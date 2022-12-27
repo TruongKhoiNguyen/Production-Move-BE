@@ -162,6 +162,42 @@ class DistributionAgent {
             throw err
         }
     }
+
+    async returnToCustomer(product_id, customer_id) {
+        const storages = await Storage.findAll({ where: { user_id: this.distributionAgent.id } })
+
+        let product
+        for (let i = 0; i < storages.length; i++) {
+            const inventory = new Inventory(storages[i])
+            const tempProduct = await inventory.retrieve(product_id)
+
+            if (tempProduct) {
+                product = tempProduct
+                break
+            }
+        }
+
+        if (!product) {
+            throw new Error('This product is not in inventory')
+        }
+
+        if (product.status !== 6) {
+            throw new Error('This product can not be returned')
+        }
+
+        try {
+            const result = await sequelize.transaction(async (t) => {
+                const sale = await Sale.findOne({ where: { product_id: product_id }, transaction: t })
+                await Product.update({ status: 3 /* Sold */ }, { where: { id: product_id }, transaction: t })
+
+                return sale.id
+            })
+
+            return result
+        } catch (err) {
+            throw err
+        }
+    }
 }
 
 module.exports = DistributionAgent
