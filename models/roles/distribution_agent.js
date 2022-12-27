@@ -91,7 +91,7 @@ class DistributionAgent {
         }
     }
 
-    async receiveForRepairing(product_id, storage_id) {
+    async receiveProduct(product_id, storage_id) {
         const product = await Product.findByPk(product_id)
 
         if (product.status !== 3 /* Sold */ && product.status !== 7 /* Recalling */) {
@@ -174,7 +174,7 @@ class DistributionAgent {
         }
     }
 
-    async returnToCustomer(product_id, customer_id) {
+    async returnToCustomer(product_id) {
         const storages = await Storage.findAll({ where: { user_id: this.user.id } })
 
         let product

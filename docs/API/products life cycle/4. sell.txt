@@ -1,0 +1,17 @@
+Use case: Đại lý bán sản phẩm cho khách hàng
+
+Post: /api/v1/distribution/sales
+
+Request:
+{
+    "product_id": mã sản phẩm,
+    "customer_id": mã khách hàng
+}
+
+Response:
+Thành công:
+200
+{
+    "data": mã bán hàng,
+    "message": "Product sold"
+}

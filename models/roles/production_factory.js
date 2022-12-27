@@ -4,7 +4,7 @@ const Inventory = require('../storage/inventory')
 const Warehouse = require('../storage/warehouse')
 const { Op } = require('sequelize')
 
-const { Storage, Product, Logistics: PersistentLogistics, LotLogistics, User } = ModelsManager.models
+const { Storage, Product, Logistics: PersistentLogistics, LotLogistics, User, Lot, WarehouseRecord } = ModelsManager.models
 const sequelize = ModelsManager.connection
 
 class ProductionFactory {
@@ -79,6 +79,31 @@ class ProductionFactory {
 
             return result
 
+
+        } catch (err) {
+            throw err
+        }
+    }
+
+    async manufacture(model, amount, storage_id) {
+        const storage = await Storage.findByPk(storage_id)
+
+        if (storage.user_id !== this.user.id) {
+            throw new Error('This storage does not belong to this user')
+        }
+
+        try {
+            const result = await sequelize.transaction(async (t) => {
+                const lot = await Lot.create({ model: model }, { transaction: t })
+
+                await Product.bulkCreate(Array(amount).fill({ lot_number: lot.id, status: 1 /* New product */ }), { transaction: t })
+
+                await WarehouseRecord.create({ storage_id: storage_id, lot_number: lot.id }, { transaction: t })
+
+                return lot.id
+            })
+
+            return result
 
         } catch (err) {
             throw err

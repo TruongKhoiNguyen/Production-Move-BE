@@ -1,0 +1,14 @@
+Use case: Cơ sở sản xuất đánh dấu sản phẩm không sửa được để trả về đại lý
+
+Post: /api/v1/warranty/return
+
+Request:
+{
+    "product_id": mã sản phẩm 
+}
+
+Response:
+200
+{
+    "message": "Product returned"
+}
