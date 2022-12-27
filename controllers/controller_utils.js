@@ -14,8 +14,8 @@ class ControllerUtil {
     }
 
     static pagination(req) {
-        let limit = 10
-        let offset = 0
+        let limit
+        let offset
 
         try {
             limit = parseInt(req.query.limit) || limit
