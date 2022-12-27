@@ -10,7 +10,6 @@ const customer = require('./customer')
 const userController = require('../controllers/users_controller')
 
 const { authenticateToken } = require('../auth/project')
-const { test } = require('../controllers/debug_controller')
 
 const router = express.Router()
 
