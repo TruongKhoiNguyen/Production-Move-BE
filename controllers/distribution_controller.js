@@ -17,7 +17,7 @@ const sendForRepair = async (req, res) => {
 
     try {
         const distributionAgent = new DistributionAgent(user)
-        const result = await distributionAgent.sendForRepair(product_id, to)
+        const result = await distributionAgent.send(product_id, to)
         return FormattedResponse.ok(res, { data: result })
 
     } catch (err) {
