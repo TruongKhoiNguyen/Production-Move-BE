@@ -6,142 +6,33 @@ const GetterBuilder = require('./getter_builder')
 const ProductionLogistics = require('../models/logistics/production_logistics')
 const DistributionAgent = require('../models/roles/distribution_agent')
 const WarrantyCenter = require('../models/roles/warranty_center')
+const ProductionFactory = require('../models/roles/production_factory')
 
 const { Shipping, User, Product } = ModelsManager.models
 
-const send = async (req, res) => {
-    const from = req.user.id
-
-    const { to, lot_number } = req.body
-
-    const user = await User.findByPk(from)
-
-    if (user.role !== 'production') {
-        FormattedResponse.badRequest(res, 'Can not send')
-    }
-
-    const logistics = new ProductionLogistics(user)
-    try {
-        const id = await logistics.send(lot_number, to)
-
-        return FormattedResponse.ok(res, { data: id })
-    } catch (err) {
-        return FormattedResponse.internalServerError(res, err.message)
-    }
-
-}
-
-const receiveOrder = async (req, res) => {
-    const userId = req.user.id
-    const { storage_id } = req.body
-    const { delivery_id } = req.params
-
-    if (ControllerUtil.checkEmptyFields(userId, storage_id, delivery_id)) {
-        return FormattedResponse.badRequest(res, 'Fill empty field')
-    }
-
-    const user = await User.findByPk(userId)
+const getAll = async (req, res) => {
+    const user = await User.findByPk(req.user.id)
 
     try {
-        if (user.role === 'distribution') {
-            const distributionAgent = new DistributionAgent(user)
-            await distributionAgent.receive(delivery_id, storage_id)
-
+        let getter
+        if (user.role === 'production') {
+            getter = new ProductionFactory(user)
+        } else if (user.role === 'distribution') {
+            getter = new DistributionAgent(user)
         } else if (user.role === 'warranty') {
-            const warrantyCenter = new WarrantyCenter(user)
-            await warrantyCenter.receive(delivery_id, storage_id)
-
+            getter = new WarrantyCenter(user)
         } else {
             return FormattedResponse.badRequest(res, 'This role is not supported')
         }
 
-        return FormattedResponse.ok(res, { message: 'Product received' })
+        const result = await getter.getProduct()
+        return FormattedResponse.ok(res, { data: result })
 
     } catch (err) {
         return FormattedResponse.internalServerError(res, err.message)
     }
 }
-
-const sell = async (req, res) => {
-    const userId = req.user.id
-
-    const { product_id, customer_id } = req.body
-
-    if (ControllerUtil.checkEmptyFields(product_id, customer_id)) {
-        return FormattedResponse.badRequest(res, 'Fill empty field')
-    }
-
-    const user = await User.findByPk(userId)
-    const product = await Product.findByPk(product_id)
-
-    try {
-        const distributionAgent = new DistributionAgent(user)
-        let result
-        let message
-        if (product.status === 2) {
-            result = await distributionAgent.sell(product_id, customer_id)
-            message = 'Sold'
-        } else if (product.status === 6) {
-            result = await distributionAgent.returnToCustomer(product_id, customer_id)
-            message = 'Returned'
-        }
-
-        return FormattedResponse.ok(res, { data: result, message: message })
-    } catch (err) {
-        return FormattedResponse.internalServerError(res, err.message)
-    }
-}
-
-const receiveForRepairing = async (req, res) => {
-    const { product_id, storage_id } = req.body
-
-    if (ControllerUtil.checkEmptyFields(product_id, storage_id)) {
-        return FormattedResponse.badRequest(res, 'Fill empty field')
-    }
-
-    const userId = req.user.id
-    const user = await User.findByPk(userId)
-
-    try {
-        const distributionAgent = new DistributionAgent(user)
-        const result = await distributionAgent.receiveProduct(product_id, storage_id)
-        return FormattedResponse.ok(res, { message: result })
-    } catch (err) {
-        return FormattedResponse.internalServerError(res, err.message)
-    }
-}
-
-const recall = async (req, res) => {
-    const { lot_number } = req.body
-
-    if (!lot_number) {
-        return FormattedResponse.badRequest(res, 'Fill empty field')
-    }
-
-    const user = await User.findByPk(req.user.id)
-
-    try {
-        const distributionAgent = new DistributionAgent(user)
-        await distributionAgent.recall(lot_number)
-        return FormattedResponse.ok(res, { message: 'Recalling' })
-    } catch (err) {
-        return FormattedResponse.internalServerError(res, err.message)
-    }
-}
-
-const getShippings = GetterBuilder
-    .of()
-    .setVariables((req, vars) => {
-        vars.userId = req.user.id
-    })
-    .setCondition(Shipping, (vars) => ({ to: vars.userId }))
-    .build()
 
 module.exports = {
-    send,
-    getShippings,
-    receiveOrder,
-    sell,
-    receiveForRepairing,
-    recall
+    getAll
 }

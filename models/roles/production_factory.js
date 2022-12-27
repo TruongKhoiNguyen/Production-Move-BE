@@ -2,7 +2,7 @@ const ModelsManager = require('../models_manager')
 const Logistics = require('../logistics/logistics')
 const Inventory = require('../storage/inventory')
 const Warehouse = require('../storage/warehouse')
-const { Op } = require('sequelize')
+const { Op, QueryTypes } = require('sequelize')
 
 const { Storage, Product, Logistics: PersistentLogistics, LotLogistics, User, Lot, WarehouseRecord } = ModelsManager.models
 const sequelize = ModelsManager.connection
@@ -108,6 +108,17 @@ class ProductionFactory {
         } catch (err) {
             throw err
         }
+    }
+
+    async getProduct() {
+        const query = 'select * from Products where lot_number in (select lot_number from WarehouseRecords where storage_id in (select id from Storages where user_id = :user_id)) and status = 1 or status = 9 union select * from Products where id in (select products_id from InventoryRecords where storage_id in (select id from Storages where user_id = :user_id)) and status = 1 or status = 9;';
+
+        const result = await sequelize.query(query, {
+            replacements: { user_id: this.user.id },
+            type: QueryTypes.SELECT
+        })
+
+        return result
     }
 }
 
