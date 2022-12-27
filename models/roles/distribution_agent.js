@@ -244,6 +244,31 @@ class DistributionAgent {
             throw err
         }
     }
+
+    async returnToFactory(factory_id) {
+        const factory = await User.findByPk(factory_id)
+
+        if (factory.role !== 'production') {
+            throw new Error('This is not a factory')
+        }
+
+        const storages = await Storage.findAll({ where: { user_id: this.distributionAgent.id } })
+        const storageId = storages.map(storage => storage.id)
+        const records = await InventoryRecord.findAll({ where: { storage_id: { [Op.in]: storageId } } })
+        const productId = records.map(record => record.products_id)
+        const recalledProducts = await Product.findAll({ where: { id: { [Op.in]: productId }, status: 8 } })
+
+        try {
+            await sequelize.transaction(async (t) => {
+                const logistics = await PersistentLogistics.bulkCreate(Array(recalledProducts.length).fill({ from: this.distributionAgent.id, to: factory_id, type: 'individual' }), { transaction: t })
+                await IndividualLogistics.bulkCreate(logistics.map((el, i) => ({ delivery_id: el.id, product_id: recalledProducts[i].id })), { transaction: t })
+                await Product.update({ status: 0 }, { where: { id: { [Op.in]: recalledProducts.map(el => el.id) } }, transaction: t })
+            })
+
+        } catch (err) {
+            throw err
+        }
+    }
 }
 
 module.exports = DistributionAgent
