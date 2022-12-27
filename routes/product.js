@@ -20,5 +20,6 @@ router.post('/sales', checkRole(['distribution']), productsController.sell)
 
 router.post('/repairing', checkRole(['distribution']), productsController.receiveForRepairing)
 router.post('/recall', checkRole(['distribution']), productsController.recall)
+router.post('/return', checkRole(['production']), productionController.receiveReturn)
 
 module.exports = router
