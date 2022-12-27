@@ -1,0 +1,19 @@
+Use case:
+- Đại lý nhận sản phẩm từ cơ sở sản xuất
+- Trung tâm bảo hành nhận sản phẩm từ đại lý
+- Đại lý nhận sản phẩm từ trung tâm bảo hành
+
+Post: /api/v1/logistics/:delivery_id
+(delivery_id là mã vận chuyển)
+
+Request:
+{
+    "storage_id": mã nhà kho chuyển vào
+}
+
+Response:
+Thành công:
+200
+{
+    "message": "Product received"
+}

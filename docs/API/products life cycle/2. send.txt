@@ -1,0 +1,21 @@
+Use case:
+- Cơ sở sản xuất gửi sản phẩm đến cho đại lý
+- Đại lý gửi sản phẩm cần sửa đến trung tâm bảo hành
+- Trung tâm bảo hành gửi các sản phẩm đã sửa về đại lý
+
+Post: /api/v1/logistics
+
+Request:
+{
+    "lot_number": Gửi số lô trong trường hợp cơ sở sản xuất gửi cho đại lý
+    "product_id": Gửi số mã sản phẩm trong các trường hợp còn lại
+    "to": Mã người nhận
+}
+
+Response:
+Thành công:
+200
+{
+    "data": Mã vận chuyển,
+    "message": "Product sent"
+}

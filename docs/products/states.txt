@@ -1,8 +1,10 @@
-return   <-  recalled <- recalling
-                |           |
-new product -> on sale -> sold -> repair in waiting
-                            |            |
-                          repaired <- repairing
+                _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+                |                                        |
+return   <-  recalled <- recalling                       |
+                |           |                            |
+new product -> on sale -> sold -> repair in waiting      |
+                            |            |               |
+                          repaired <- repairing_ _ _ _ _ |
 
 1: new product
 2: on sale
@@ -10,7 +12,7 @@ new product -> on sale -> sold -> repair in waiting
 4: repair in waiting
 5: repairing
 6: repaired
-7: recalling
+7: recalling / can not be repaired
 8: recalled
-9: return
+9: returned
 0: shipping

@@ -19,6 +19,7 @@ app.use(passport.initialize());
 
 // routing
 app.use("/api/v1", require("./routes/api"));
+app.use("*", (req, res) => { res.status(404).json({ message: 'This route does not exist' }) })
 
 // error handler
 app.use((err, req, res, next) => {

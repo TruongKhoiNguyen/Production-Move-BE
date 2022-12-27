@@ -18,6 +18,5 @@ router.use('/distribution', authenticateToken, distribution)
 router.use('/warranty', authenticateToken, warranty)
 router.use('/logistics', authenticateToken, logistics)
 router.post('/login', userController.login)
-router.post('/debug', authenticateToken, test)
 
 module.exports = router

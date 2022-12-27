@@ -1,0 +1,15 @@
+Use case: Đại lý gửi tất cả những sản phẩm cần triệu hồi hoặc hỏng không sửa được về nhà máy sản xuất
+
+Post: /api/v1/distribution/return-factory
+
+Request:
+{
+    "to": mã nhà máy
+}
+
+Response: 
+Thành công:
+200
+{
+    "message": "Products returned"
+}

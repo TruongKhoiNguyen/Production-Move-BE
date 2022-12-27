@@ -1,0 +1,15 @@
+Use case: Đại lý phân phối triệu hồi lô sản phẩm
+
+Post: /api/v1/distribution/recall
+
+Request:
+{
+    "lot_number": Số lô sản phẩm cần triệu hồi
+}
+
+Response:
+Thành công:
+200
+{
+    "message": "Recalling"
+}

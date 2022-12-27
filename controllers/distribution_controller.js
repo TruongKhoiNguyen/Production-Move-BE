@@ -63,9 +63,9 @@ const sell = async (req, res) => {
 }
 
 const returnToCustomer = async (req, res) => {
-    const { product_id, customer_id } = req.body
+    const { product_id } = req.body
 
-    if (ControllerUtil.checkEmptyFields(product_id, customer_id)) {
+    if (!product_id) {
         return FormattedResponse.badRequest(res, 'Fill empty field')
     }
 

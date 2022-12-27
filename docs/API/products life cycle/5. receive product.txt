@@ -1,0 +1,16 @@
+Use case: Đại lý nhận hàng bị hỏng từ hành khách, hoặc hàng cần thu hồi, hoặc hàng hỏng cần trả về
+
+Post: /api/v1/distribution/receive
+
+Request:
+{
+    "product_id": mã sản phẩm,
+    "storage_id": mã nhà kho,
+}
+
+Response:
+Thành công:
+200
+{
+    "message": "Product received"
+}
