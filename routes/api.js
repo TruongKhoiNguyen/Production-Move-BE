@@ -5,6 +5,7 @@ const product = require('./product')
 const distribution = require('./distribution')
 const warranty = require('./warranty')
 const logistics = require('./logistics')
+const storage = require('./storage')
 const userController = require('../controllers/users_controller')
 
 const { authenticateToken } = require('../auth/project')
@@ -17,6 +18,7 @@ router.use('/products', authenticateToken, product)
 router.use('/distribution', authenticateToken, distribution)
 router.use('/warranty', authenticateToken, warranty)
 router.use('/logistics', authenticateToken, logistics)
+router.use('/storages', authenticateToken, storage)
 router.post('/login', userController.login)
 
 module.exports = router
