@@ -9,5 +9,6 @@ router.post('/return', checkRole(['distribution']), distributionController.retur
 router.post('/sales', checkRole(['distribution']), distributionController.sell)
 router.post('/return-customer', checkRole(['distribution']), distributionController.returnToCustomer)
 router.post('/receive', checkRole(['distribution']), distributionController.receiveProduct)
+router.post('/recall', checkRole(['distribution']), distributionController.recall)
 
 module.exports = router
