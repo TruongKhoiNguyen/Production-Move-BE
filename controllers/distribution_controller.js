@@ -37,7 +37,7 @@ const returnToFactory = async (req, res) => {
     try {
         const distribution = new DistributionAgent(user)
         await distribution.returnToFactory(to)
-        return FormattedResponse.ok(res, 'Returned')
+        return FormattedResponse.ok(res, 'Products returned')
     } catch (err) {
         return FormattedResponse.internalServerError(res, err.message)
     }
