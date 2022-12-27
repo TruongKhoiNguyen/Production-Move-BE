@@ -16,7 +16,7 @@ class GetterBuilder {
         return this
     }
 
-    setCondition(model, condition) {
+    setCondition(model, condition = this.#setCondition) {
         this.#model = model
         this.#setCondition = condition
         return this
