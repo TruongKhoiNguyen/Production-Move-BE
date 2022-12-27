@@ -7,13 +7,14 @@ Request:
 {
     "model": integer thể hiện mã model
     "amount": số lượng sản phẩm sản xuất
-    "warehouse_id": mã nhà kho để chứa sản phẩm sản xuất xong
+    "storage_id": mã nhà kho để chứa sản phẩm sản xuất xong
 }
 
 Response:
 Thành công:
 200
 {
+    "data": số lô
     "message": "Products manufactured"
 }
 
