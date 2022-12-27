@@ -5,5 +5,6 @@ const { checkRole } = require('../auth/project')
 const router = express.Router()
 
 router.post('/repair', checkRole(['distribution']), distributionController.sendForRepair)
+router.post('/return', checkRole(['distribution']), distributionController.returnToFactory)
 
 module.exports = router
