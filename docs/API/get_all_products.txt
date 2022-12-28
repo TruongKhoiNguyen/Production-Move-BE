@@ -1,0 +1,19 @@
+Use case: Lấy ra toàn bộ sản phẩm đang có trong kho
+
+Get: /api/v1/products
+
+Response:
+Thành công:
+200
+{
+    data: [
+        {
+            "id": mã sản phẩm,
+            "status": ...,
+            "lot_number": ...,
+            "product_line": ...,
+            "model": ...,
+            "storage_id": ...
+        }
+    ]
+}

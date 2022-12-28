@@ -1,0 +1,10 @@
+Use case: Người dùng lấy các sản phẩm mình đã chuyển đi
+
+Get: /api/v1/logistics/sent
+
+Response:
+Thành công:
+200
+{
+    "data": []
+}
