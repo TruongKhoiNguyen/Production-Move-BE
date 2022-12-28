@@ -10,7 +10,7 @@ const get = async (req, res) => {
     const { lot_number } = req.params
 
     try {
-        const query = 'SELECT Lots.id, ProductModels.product_line, ProductModels.name AS model, count(Products.id) AS amount FROM Lots JOIN Products ON Products.lot_number = Lots.id JOIN ProductModels ON Lots.model = ProductModels.id WHERE Lots.id = :lot_number GROUP BY Lots.id'
+        const query = 'SELECT Lots.id, ProductModels.product_line, ProductModels.name AS model, count(Products.id) AS amount, Lots.createdAt as manufacturing_date FROM Lots JOIN Products ON Products.lot_number = Lots.id JOIN ProductModels ON Lots.model = ProductModels.id WHERE Lots.id = :lot_number GROUP BY Lots.id'
         const result = await sequelize.query(query, {
             replacements: { lot_number: parseInt(lot_number) },
             type: QueryTypes.SELECT
