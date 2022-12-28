@@ -14,6 +14,19 @@ const getAll = async (req, res) => {
     }
 }
 
+const get = async (req, res) => {
+    const { storage_id } = req.params
+
+    try {
+        const result = await Storage.findByPk(storage_id)
+        return FormattedResponse.ok(res, { data: result })
+
+    } catch (err) {
+        return FormattedResponse.internalServerError(res, err.message)
+    }
+}
+
 module.exports = {
-    getAll
+    getAll,
+    get
 }
