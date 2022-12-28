@@ -93,8 +93,21 @@ const getAll = GetterBuilder.of()
     ))
     .build()
 
+const get = async (req, res) => {
+    const { user_id } = req.params
+
+    try {
+        const user = await User.findByPk(user_id)
+        return Response.ok(res, { data: { id: user.id, email: user.email, name: user.name, role: user.role } })
+
+    } catch (err) {
+        return Response.internalServerError(res, err.message)
+    }
+}
+
 module.exports = {
     register,
     login,
-    getAll
+    getAll,
+    get
 }
