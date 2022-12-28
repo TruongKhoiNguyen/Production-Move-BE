@@ -1,0 +1,10 @@
+Use case: Lấy thông tin chi tiết của 1 kho cụ thể
+
+Get: /api/v1/storages/:storage_id
+
+Response:
+Thành công:
+200
+{
+    "data": {}
+}

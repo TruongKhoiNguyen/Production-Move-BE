@@ -1,0 +1,10 @@
+Use case: Người dùng lấy ra các sản phẩm đang gửi đến 
+
+Get: api/v1/logistics/inbox
+
+Response: 
+Thành công:
+200
+{
+    "data": []
+}
