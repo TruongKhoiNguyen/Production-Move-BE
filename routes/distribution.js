@@ -10,4 +10,6 @@ router.post('/receive', checkRole(['distribution']), distributionController.rece
 router.post('/recall', checkRole(['distribution']), distributionController.recall)
 router.post('/return-factory', checkRole(['distribution']), distributionController.returnToFactory)
 
+router.get('/sales', checkRole(['distribution']), distributionController.getSale)
+
 module.exports = router

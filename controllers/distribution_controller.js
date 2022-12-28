@@ -2,8 +2,9 @@ const ControllerUtil = require('./controller_utils')
 const FormattedResponse = require('../views/response')
 const ModelsManager = require('../models/models_manager')
 const DistributionAgent = require('../models/roles/distribution_agent')
+const GetterBuilder = require('./getter_builder')
 
-const { User, Product } = ModelsManager.models
+const { User, Product, Sale } = ModelsManager.models
 
 const sendForRepair = async (req, res) => {
     const { product_id, to } = req.body
@@ -118,11 +119,17 @@ const recall = async (req, res) => {
     }
 }
 
+const getSale = GetterBuilder.of()
+    .setVariables((req, vars) => { vars.userId = req.user.id })
+    .setCondition(Sale, (vars) => ({ distribution_id: vars.userId }))
+    .build()
+
 module.exports = {
     sendForRepair,
     returnToFactory,
     sell,
     returnToCustomer,
     receiveProduct,
-    recall
+    recall,
+    getSale
 }

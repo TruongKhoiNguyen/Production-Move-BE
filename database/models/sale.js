@@ -12,9 +12,11 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       Sale.belongsTo(models.Customer, { foreignKey: 'customer_id' })
       Sale.belongsTo(models.Product, { foreignKey: 'product_id' })
+      Sale.belongsTo(models.User, { foreignKey: 'distribution_id' })
     }
   }
   Sale.init({
+    distribution_id: DataTypes.INTEGER,
     product_id: DataTypes.INTEGER,
     customer_id: DataTypes.INTEGER
   }, {

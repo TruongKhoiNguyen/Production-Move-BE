@@ -77,7 +77,7 @@ class DistributionAgent {
 
         try {
             const result = await sequelize.transaction(async (t) => {
-                const sale = await Sale.create({ product_id: product_id, customer_id: customer_id }, { transaction: t })
+                const sale = await Sale.create({ distribution_id: this.user.id, product_id: product_id, customer_id: customer_id }, { transaction: t })
 
                 product.status = 3 /* Sold */
                 await product.save({ transaction: t })
