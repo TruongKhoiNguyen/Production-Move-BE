@@ -111,7 +111,7 @@ class ProductionFactory {
     }
 
     async getProduct() {
-        const query = 'select * from Products where lot_number in (select lot_number from WarehouseRecords where storage_id in (select id from Storages where user_id = :user_id)) and status = 1 or status = 9 union select * from Products where id in (select products_id from InventoryRecords where storage_id in (select id from Storages where user_id = :user_id)) and status = 1 or status = 9;';
+        const query = 'SELECT Products.id, Products.status, Products.lot_number, ProductModels.product_line, ProductModels.name as model, Storages.id AS storage_id FROM Products JOIN Lots ON Products.lot_number = Lots.id JOIN ProductModels ON Lots.model = ProductModels.id JOIN WarehouseRecords ON Lots.id = WarehouseRecords.lot_number JOIN Storages ON WarehouseRecords.storage_id = Storages.id WHERE Products.status in (1, 9) AND Storages.user_id = :user_id UNION SELECT Products.id, Products.status, Products.lot_number, ProductModels.product_line, ProductModels.name as model, Storages.id AS storage_id FROM Products JOIN Lots ON Products.lot_number = Lots.id JOIN ProductModels ON Lots.model = ProductModels.id JOIN InventoryRecords ON InventoryRecords.products_id = Products.id JOIN Storages ON Storages.id = InventoryRecords.storage_id WHERE Products.status in (1, 9) AND Storages.user_id = :user_id';
 
         const result = await sequelize.query(query, {
             replacements: { user_id: this.user.id },
