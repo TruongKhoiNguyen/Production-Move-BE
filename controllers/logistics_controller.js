@@ -73,13 +73,19 @@ const send = async (req, res) => {
 
 }
 
-const getAll = GetterBuilder.of()
+const getInbox = GetterBuilder.of()
     .setVariables((req, vars) => vars.userId = req.user.id)
     .setCondition(Logistics, (vars) => ({ to: vars.userId }))
+    .build()
+
+const getSent = GetterBuilder.of()
+    .setVariables((req, vars) => vars.userId = req.user.id)
+    .setCondition(Logistics, (vars) => ({ from: vars.userId }))
     .build()
 
 module.exports = {
     receive,
     send,
-    getAll
+    getInbox,
+    getSent
 }
