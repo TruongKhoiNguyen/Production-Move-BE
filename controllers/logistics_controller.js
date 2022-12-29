@@ -1,3 +1,5 @@
+const { QueryTypes } = require('sequelize')
+
 const ModelsManager = require('../models/models_manager')
 const ProductionFactory = require('../models/roles/production_factory')
 const DistributionAgent = require('../models/roles/distribution_agent')
@@ -7,6 +9,7 @@ const FormattedResponse = require('../views/response')
 const GetterBuilder = require('./getter_builder')
 
 const { User, Logistics } = ModelsManager.models
+const sequelize = ModelsManager.connection
 
 const receive = async (req, res) => {
     const { storage_id } = req.body
@@ -73,15 +76,31 @@ const send = async (req, res) => {
 
 }
 
-const getInbox = GetterBuilder.of()
-    .setVariables((req, vars) => vars.userId = req.user.id)
-    .setCondition(Logistics, (vars) => ({ to: vars.userId }))
-    .build()
+const getInbox = async (req, res) => {
+    try {
+        const query = "SELECT Logistics.[from], Logistics.[to], Logistics.received, Logistics.[type], ProductModels.product_line, ProductModels.name AS model FROM Logistics JOIN LotLogistics ON Logistics.id = LotLogistics.delivery_id JOIN Lots ON Lots.id = LotLogistics.lot_number JOIN ProductModels ON Lots.model = ProductModels.id WHERE Logistics.[to] = :user_id UNION SELECT Logistics.[from], Logistics.[to], Logistics.received, Logistics.[type], ProductModels.product_line, ProductModels.name AS model FROM Logistics JOIN IndividualLogistics ON IndividualLogistics.delivery_id = Logistics.id JOIN Products ON IndividualLogistics.product_id = Products.id JOIN Lots ON Lots.id = Products.lot_number JOIN ProductModels ON Lots.model = ProductModels.id WHERE Logistics.[to] = :user_id"
+        const result = await sequelize.query(query, {
+            replacements: { user_id: req.user.id },
+            type: QueryTypes.SELECT
+        })
+        return FormattedResponse.ok(res, { data: result })
+    } catch (err) {
+        return FormattedResponse.internalServerError(res, err.message)
+    }
+}
 
-const getSent = GetterBuilder.of()
-    .setVariables((req, vars) => vars.userId = req.user.id)
-    .setCondition(Logistics, (vars) => ({ from: vars.userId }))
-    .build()
+const getSent = async (req, res) => {
+    try {
+        const query = "SELECT Logistics.[from], Logistics.[to], Logistics.received, Logistics.[type], ProductModels.product_line, ProductModels.name AS model FROM Logistics JOIN LotLogistics ON Logistics.id = LotLogistics.delivery_id JOIN Lots ON Lots.id = LotLogistics.lot_number JOIN ProductModels ON Lots.model = ProductModels.id WHERE Logistics.[from] = :user_id UNION SELECT Logistics.[from], Logistics.[to], Logistics.received, Logistics.[type], ProductModels.product_line, ProductModels.name AS model FROM Logistics JOIN IndividualLogistics ON IndividualLogistics.delivery_id = Logistics.id JOIN Products ON IndividualLogistics.product_id = Products.id JOIN Lots ON Lots.id = Products.lot_number JOIN ProductModels ON Lots.model = ProductModels.id WHERE Logistics.[from] = :user_id"
+        const result = await sequelize.query(query, {
+            replacements: { user_id: req.user.id },
+            type: QueryTypes.SELECT
+        })
+        return FormattedResponse.ok(res, { data: result })
+    } catch (err) {
+        return FormattedResponse.internalServerError(res, err.message)
+    }
+}
 
 module.exports = {
     receive,
