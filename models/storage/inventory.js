@@ -29,6 +29,16 @@ class Inventory {
 
         return product
     }
+
+    ioStore(productIds) {
+        return (async (transaction) => {
+            try {
+                await InventoryRecord.bulkCreate(productIds.map((id) => ({ storage_id: this.storage.id, products_id: id })), { transaction: transaction })
+            } catch (err) {
+                throw err
+            }
+        })
+    }
 }
 
 module.exports = Inventory
