@@ -2,15 +2,20 @@ const { QueryTypes } = require('sequelize')
 
 const ModelsManager = require('../models/models_manager')
 const FormattedResponse = require('../views/response')
+const ControllerUtil = require('./controller_utils')
 const DistributionAgent = require('../models/roles/distribution_agent')
 const WarrantyCenter = require('../models/roles/warranty_center')
 const ProductionFactory = require('../models/roles/production_factory')
+const ExecutiveBoard = require('../models/roles/executive_board')
 
 const { Shipping, User, Product } = ModelsManager.models
 const sequelize = ModelsManager.connection
 
 const getAll = async (req, res) => {
     const user = await User.findByPk(req.user.id)
+
+    const { limit, offset } = ControllerUtil.pagination(req)
+    console.log(`${limit} ${offset}`)
 
     try {
         let getter
@@ -20,6 +25,8 @@ const getAll = async (req, res) => {
             getter = new DistributionAgent(user)
         } else if (user.role === 'warranty') {
             getter = new WarrantyCenter(user)
+        } else if (user.role === 'executive') {
+            getter = { getProduct: ExecutiveBoard.getProduct(limit, offset) }
         } else {
             return FormattedResponse.badRequest(res, 'This role is not supported')
         }
