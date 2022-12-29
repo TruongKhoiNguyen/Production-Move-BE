@@ -18,8 +18,8 @@ class ControllerUtil {
         let offset
 
         try {
-            limit = parseInt(req.query.limit) || limit
-            offset = (parseInt(req.query.page) - 1) * limit || offset
+            limit = parseInt(req.query.limit)
+            offset = (parseInt(req.query.page) - 1) * limit
         } catch (err) { }
 
         return { limit: limit, offset: offset }

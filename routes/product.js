@@ -10,7 +10,7 @@ router.get('/models', modelsController.getAll)
 router.post('/models', checkRole(['executive']), modelsController.create)
 
 router.post('/', checkRole(['production']), productionController.manufacture)
-router.get('/', checkRole(['production', 'distribution', 'warranty']), productsController.getAll)
+router.get('/', checkRole(['production', 'distribution', 'warranty', 'executive']), productsController.getAll)
 router.get('/:product_id', productsController.get)
 
 module.exports = router
