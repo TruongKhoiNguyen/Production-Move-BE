@@ -1,0 +1,14 @@
+Use case: Đại lý phân phối thêm khách hàng mới
+
+Post: /api/v1/customers
+
+Request: 
+{
+    "email":...
+}
+
+Response:
+{
+    "data":...,
+    "mesage": "New customer created"
+}

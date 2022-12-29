@@ -1,0 +1,19 @@
+Use case: Ban điều hành thêm một nhà kho mới 
+
+Điều kiện: Đăng nhập bằng tài khoản ban điều hành
+
+Post: /api/v1/storages
+
+Request: 
+{
+    "user_id": mã người dùng,
+    "location": địa điểm nhà kho
+}
+
+Response:
+Thành công:
+200
+{
+    "data":...,
+    "message": "Storage created"
+}
