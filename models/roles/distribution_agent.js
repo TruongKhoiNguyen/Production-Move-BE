@@ -27,29 +27,32 @@ class DistributionAgent {
         }
 
         const logistics = new Logistics(this.user)
-        const products = await logistics.get(delivery_id)
-
         const inventory = new Inventory(storage)
-        for (let i = 0; i < products.length; i++) {
-            await inventory.store(products[i])
-        }
 
         const delivery = await PersistentLogistics.findByPk(delivery_id)
         const senderId = delivery.from
         const sender = await User.findByPk(senderId)
 
+        let newStatus
         if (sender.role === 'production') {
-            for (let i = 0; i < products.length; i++) {
-                const product = await Product.findByPk(products[i])
-                product.status = 2
-                product.save()
-            }
+            newStatus = 2 /* On sale */
         } else if (sender.role === 'warranty') {
-            for (let i = 0; i < products.length; i++) {
-                const product = await Product.findByPk(products[i])
-                product.status = 6 /* Repaired */
-                product.save()
-            }
+            newStatus = 6 /* Repaired */
+        }
+
+        try {
+            await sequelize.transaction(async (t) => {
+                const getOrderProducts = await logistics.ioGet(delivery_id)
+                const products = await getOrderProducts(t)
+                const store = inventory.ioStore(products)
+                await store(t)
+
+                await Product.update({ status: newStatus }, { where: { id: { [Op.in]: products } }, transaction: t })
+            })
+
+
+        } catch (err) {
+            throw err
         }
     }
 
