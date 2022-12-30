@@ -8,7 +8,7 @@ const ControllerUtil = require('./controller_utils')
 const FormattedResponse = require('../views/response')
 const GetterBuilder = require('./getter_builder')
 
-const { User, Logistics } = ModelsManager.models
+const { User, Logistics, LotLogistics, IndividualLogistics } = ModelsManager.models
 const sequelize = ModelsManager.connection
 
 const receive = async (req, res) => {
@@ -102,9 +102,30 @@ const getSent = async (req, res) => {
     }
 }
 
+const get = async (req, res) => {
+    const { delivery_id } = req.params
+
+    try {
+        const order = await Logistics.findByPk(delivery_id)
+
+        let result
+        if (order.type === 'lot') {
+            result = await LotLogistics.findOne({ delivery_id: delivery_id })
+        } else if (order.type === 'individual') {
+            result = await IndividualLogistics.findOne({ delivery_id: delivery_id })
+        }
+
+        return FormattedResponse.ok(res, { data: result })
+
+    } catch (err) {
+        return FormattedResponse.internalServerError(res, err.message)
+    }
+}
+
 module.exports = {
     receive,
     send,
     getInbox,
-    getSent
+    getSent,
+    get
 }
