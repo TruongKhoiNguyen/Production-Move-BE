@@ -1,3 +1,5 @@
+const { QueryTypes } = require('sequelize')
+
 const ControllerUtil = require('./controller_utils')
 const FormattedResponse = require('../views/response')
 const ModelsManager = require('../models/models_manager')
@@ -5,6 +7,7 @@ const DistributionAgent = require('../models/roles/distribution_agent')
 const GetterBuilder = require('./getter_builder')
 
 const { User, Product, Sale } = ModelsManager.models
+const sequelize = ModelsManager.connection
 
 const sendForRepair = async (req, res) => {
     const { product_id, to } = req.body
@@ -119,10 +122,20 @@ const recall = async (req, res) => {
     }
 }
 
-const getSale = GetterBuilder.of()
-    .setVariables((req, vars) => { vars.userId = req.user.id })
-    .setCondition(Sale, (vars) => ({ distribution_id: vars.userId }))
-    .build()
+const getSale = async (req, res) => {
+    const query = 'select Sales.id, Sales.customer_id, Sales.product_id, Products.status, ProductModels.product_line, ProductModels.name as model, Sales.createdAt as sale_date from Sales join Products on Sales.product_id = Products.id join Lots on Lots.id = Products.lot_number join ProductModels on ProductModels.id = Lots.model'
+
+    try {
+        const result = await sequelize.query(query, {
+            replacements: { user_id: req.user.id },
+            type: QueryTypes.SELECT
+        })
+
+        return FormattedResponse.ok(res, { data: result })
+    } catch (err) {
+        return FormattedResponse.internalServerError(res, err.message)
+    }
+}
 
 module.exports = {
     sendForRepair,
