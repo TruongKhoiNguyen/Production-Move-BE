@@ -10,4 +10,6 @@ router.post('/', checkRole(['production', 'distribution', 'warranty']), logistic
 router.get('/inbox', logisticsController.getInbox)
 router.get('/sent', logisticsController.getSent)
 
+router.get('/:delivery_id', logisticsController.get)
+
 module.exports = router
