@@ -274,7 +274,7 @@ class DistributionAgent {
     }
 
     async getProduct() {
-        const query = 'SELECT Products.id, Products.status, Products.lot_number, ProductModels.product_line, ProductModels.name as model, Storages.id AS storage_id, Products.createdAt as manufacturing_date FROM Products JOIN Lots ON Products.lot_number = Lots.id JOIN ProductModels ON Lots.model = ProductModels.id JOIN InventoryRecords ON InventoryRecords.products_id = Products.id JOIN Storages ON Storages.id = InventoryRecords.storage_id WHERE Products.status in (2, 4, 6, 8) AND Storages.user_id = :user_id';
+        const query = 'SELECT Products.id, Products.status, Products.lot_number, ProductModels.product_line, ProductModels.name AS model, Storages.id AS storage_id, Products.createdAt AS manufacturing_date FROM Products JOIN Lots ON Products.lot_number = Lots.id JOIN ProductModels ON Lots.model = ProductModels.id JOIN (SELECT max(id), storage_id, products_id FROM InventoryRecords GROUP BY products_id) AS CurrentInventory ON CurrentInventory.products_id = Products.id JOIN Storages ON Storages.id = CurrentInventory.storage_id WHERE Products.status in (2, 4, 6, 8) AND Storages.user_id = :user_id';
 
         const result = await sequelize.query(query, {
             replacements: { user_id: this.user.id },
